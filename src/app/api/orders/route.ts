@@ -9,8 +9,6 @@ import { z } from "zod";
 export async function POST(req: NextRequest) {
   try {
     const session = await auth();
-    if (!session) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
-
     const body = await req.json();
     const data = checkoutSchema.parse(body);
 
@@ -46,10 +44,16 @@ export async function POST(req: NextRequest) {
     const total = subtotal + shippingCost;
     const orderNumber = generateOrderNumber();
 
+    // Use session user if logged in, otherwise use guest info from shipping form
+    const guestEmail = session?.user.email ?? data.shipping.email;
+    const guestName = session?.user.name ?? data.shipping.name;
+
     const order = await prisma.order.create({
       data: {
         orderNumber,
-        userId: session.user.id,
+        userId: session?.user.id ?? undefined,
+        guestEmail: session ? undefined : guestEmail,
+        guestName: session ? undefined : guestName,
         status: "PENDING",
         paymentMethod: data.paymentMethod,
         subtotal,
@@ -58,18 +62,13 @@ export async function POST(req: NextRequest) {
         total,
         shippingAddress: data.shipping,
         notes: data.notes,
-        items: {
-          create: orderItems,
-        },
+        items: { create: orderItems },
       },
-      include: {
-        items: { include: { product: true } },
-        user: true,
-      },
+      include: { items: { include: { product: true } } },
     });
 
-    // Send emails (non-blocking)
-    sendOrderConfirmationEmail(order.user.email, order.user.name ?? "", {
+    // Send confirmation to guest or session user
+    sendOrderConfirmationEmail(guestEmail, guestName, {
       orderNumber: order.orderNumber,
       items: order.items.map((i) => ({
         name: i.product.name,
@@ -88,7 +87,7 @@ export async function POST(req: NextRequest) {
       orderNumber: order.orderNumber,
       total: Number(order.total),
       paymentMethod: order.paymentMethod,
-      user: { name: order.user.name, email: order.user.email },
+      user: { name: guestName, email: guestEmail },
     }).catch(console.error);
 
     return NextResponse.json({ orderId: order.id, orderNumber: order.orderNumber }, { status: 201 });

@@ -36,16 +36,6 @@ export default function CheckoutPage() {
     },
   });
 
-  if (!session) {
-    return (
-      <div className="max-w-md mx-auto px-4 py-20 text-center">
-        <h1 className="text-2xl font-serif font-bold mb-4">Necesitás iniciar sesión</h1>
-        <p className="text-muted-foreground mb-6">Para completar tu compra, iniciá sesión o creá una cuenta.</p>
-        <Button asChild><Link href="/login?callbackUrl=/checkout">Iniciar sesión</Link></Button>
-      </div>
-    );
-  }
-
   if (items.length === 0 && step !== 3) {
     return (
       <div className="max-w-md mx-auto px-4 py-20 text-center">
@@ -209,7 +199,7 @@ export default function CheckoutPage() {
                   <p className="text-sm text-white">Alias: <span className="font-mono">{process.env.NEXT_PUBLIC_BANK_ALIAS ?? "said.perfumes"}</span></p>
                   <p className="text-sm text-white">Titular: {process.env.NEXT_PUBLIC_BANK_HOLDER ?? "SAID S.R.L."}</p>
                   <p className="text-sm text-gold font-semibold mt-2">Monto a transferir: {formatPrice(total)}</p>
-                  <p className="text-xs text-muted-foreground mt-2">Una vez generada la orden, subí el comprobante desde Mis Pedidos.</p>
+                  {session && <p className="text-xs text-muted-foreground mt-2">Una vez generada la orden, subí el comprobante desde Mis Pedidos.</p>}
                 </div>
               )}
 
@@ -237,11 +227,13 @@ export default function CheckoutPage() {
               <p className="text-sm text-muted-foreground">
                 Revisá tu email — te enviamos los detalles del pedido.
               </p>
-              {paymentMethod === "TRANSFERENCIA" && (
+              {paymentMethod === "TRANSFERENCIA" && session && (
                 <p className="text-sm text-gold">Recordá subir el comprobante desde Mis Pedidos.</p>
               )}
               <div className="flex gap-3 justify-center mt-6">
-                <Button asChild><Link href="/mis-pedidos">Ver mis pedidos</Link></Button>
+                {session && (
+                  <Button asChild><Link href="/mis-pedidos">Ver mis pedidos</Link></Button>
+                )}
                 <Button variant="outline" asChild><Link href="/productos">Seguir comprando</Link></Button>
               </div>
             </div>

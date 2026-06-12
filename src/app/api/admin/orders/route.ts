@@ -71,11 +71,13 @@ export async function PATCH(req: NextRequest) {
     include: { user: true },
   });
 
-  if (status === "PAID") {
-    sendPaymentConfirmedEmail(order.user.email, order.user.name ?? "", order.orderNumber).catch(console.error);
+  const recipientEmail = order.user?.email ?? order.guestEmail ?? "";
+  const recipientName = order.user?.name ?? order.guestName ?? "";
+  if (status === "PAID" && recipientEmail) {
+    sendPaymentConfirmedEmail(recipientEmail, recipientName, order.orderNumber).catch(console.error);
   }
-  if (status === "SHIPPED") {
-    sendOrderShippedEmail(order.user.email, order.user.name ?? "", order.orderNumber, trackingCode).catch(console.error);
+  if (status === "SHIPPED" && recipientEmail) {
+    sendOrderShippedEmail(recipientEmail, recipientName, order.orderNumber, trackingCode).catch(console.error);
   }
 
   return NextResponse.json({ success: true });

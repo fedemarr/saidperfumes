@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-const PROTECTED = ["/mi-cuenta", "/mis-pedidos", "/checkout"];
+const PROTECTED = ["/mi-cuenta", "/mis-pedidos"];
 const ADMIN_ONLY = ["/admin"];
 const AUTH_ONLY = ["/login", "/register", "/forgot-password"];
 
