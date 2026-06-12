@@ -114,11 +114,15 @@ export async function sendOrderConfirmationEmail(
     order.paymentMethod === "TRANSFERENCIA"
       ? `<div style="background:#161616;border:1px solid #C9A84C;border-radius:4px;padding:20px;margin-top:20px;">
           <p style="color:#C9A84C;font-weight:bold;margin:0 0 12px;font-size:14px;letter-spacing:1px;text-transform:uppercase;">Datos para transferir</p>
-          <p style="color:#FFFFFF;margin:4px 0;font-size:14px;">CBU: <strong>${process.env.BANK_CBU}</strong></p>
-          <p style="color:#FFFFFF;margin:4px 0;font-size:14px;">Alias: <strong>${process.env.BANK_ALIAS}</strong></p>
-          <p style="color:#FFFFFF;margin:4px 0;font-size:14px;">Titular: <strong>${process.env.BANK_HOLDER}</strong></p>
+          <p style="color:#FFFFFF;margin:4px 0;font-size:14px;">CBU: <strong>${process.env.NEXT_PUBLIC_BANK_CBU ?? ""}</strong></p>
+          <p style="color:#FFFFFF;margin:4px 0;font-size:14px;">Alias: <strong>${process.env.NEXT_PUBLIC_BANK_ALIAS ?? ""}</strong></p>
+          <p style="color:#FFFFFF;margin:4px 0;font-size:14px;">Titular: <strong>${process.env.NEXT_PUBLIC_BANK_HOLDER ?? ""}</strong></p>
           <p style="color:#FFFFFF;margin:4px 0;font-size:14px;">Monto: <strong style="color:#C9A84C;">$${order.total.toLocaleString("es-AR")}</strong></p>
-          <p style="color:#A0A0A0;font-size:12px;margin-top:12px;">Una vez transferido, subí el comprobante desde tu perfil en Mis Pedidos.</p>
+          <div style="background:#0D0D0D;border:1px solid #2A2A2A;border-radius:4px;padding:16px;margin-top:16px;">
+            <p style="color:#FFFFFF;margin:0 0 6px;font-size:14px;line-height:1.6;">Una vez realizada la transferencia, mandanos el comprobante por WhatsApp al <strong style="color:#C9A84C;">+54 9 11 3786-8379</strong> para confirmar el pago.</p>
+            <p style="color:#A0A0A0;margin:0;font-size:13px;line-height:1.6;">El equipo de SAID Perfumes te confirma el pago y te envía el código de seguimiento de tu pedido.</p>
+          </div>
+          <p style="color:#C9A84C;font-size:15px;font-weight:bold;margin-top:16px;text-align:center;">¡Muchas gracias por tu compra!</p>
         </div>`
       : "";
 
