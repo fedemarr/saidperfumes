@@ -1,6 +1,10 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+let _resend: Resend | null = null;
+function getResend(): Resend {
+  if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY);
+  return _resend;
+}
 
 const FROM = process.env.EMAIL_FROM ?? "SAID Perfumes <noreply@saidperfumes.com>";
 const ADMIN = process.env.EMAIL_ADMIN ?? "admin@saidperfumes.com";
@@ -50,7 +54,7 @@ function goldButton(href: string, text: string): string {
 
 export async function sendVerificationEmail(email: string, name: string, token: string) {
   const url = `${APP_URL}/verify-email?token=${token}`;
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM,
     to: email,
     subject: "Confirmá tu cuenta en SAID Perfumes",
@@ -66,7 +70,7 @@ export async function sendVerificationEmail(email: string, name: string, token: 
 
 export async function sendPasswordResetEmail(email: string, name: string, token: string) {
   const url = `${APP_URL}/reset-password?token=${token}`;
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM,
     to: email,
     subject: "Restablecer contraseña — SAID Perfumes",
@@ -118,7 +122,7 @@ export async function sendOrderConfirmationEmail(
         </div>`
       : "";
 
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM,
     to: email,
     subject: `Orden #${order.orderNumber} confirmada — SAID Perfumes`,
@@ -147,7 +151,7 @@ export async function sendOrderConfirmationEmail(
 export async function sendNewOrderAdminEmail(
   order: { orderNumber: string; total: number; paymentMethod: string; user: { name: string | null; email: string } }
 ) {
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM,
     to: ADMIN,
     subject: `Nueva orden #${order.orderNumber} — $${order.total.toLocaleString("es-AR")}`,
@@ -163,7 +167,7 @@ export async function sendNewOrderAdminEmail(
 }
 
 export async function sendPaymentConfirmedEmail(email: string, name: string, orderNumber: string) {
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM,
     to: email,
     subject: `Pago confirmado — Orden #${orderNumber}`,
@@ -177,7 +181,7 @@ export async function sendPaymentConfirmedEmail(email: string, name: string, ord
 }
 
 export async function sendOrderShippedEmail(email: string, name: string, orderNumber: string, trackingCode?: string) {
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM,
     to: email,
     subject: `Tu pedido está en camino — Orden #${orderNumber}`,
