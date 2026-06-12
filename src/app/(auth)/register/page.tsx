@@ -13,12 +13,11 @@ import { Label } from "@/components/ui/label";
 
 export default function RegisterPage() {
   const [showPass, setShowPass] = useState(false);
-  const [turnstileToken, setTurnstileToken] = useState("");
   const [serverError, setServerError] = useState("");
   const [success, setSuccess] = useState(false);
   const router = useRouter();
 
-  const { register, handleSubmit, formState: { errors, isSubmitting }, setValue } = useForm<RegisterInput>({
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
   });
 
