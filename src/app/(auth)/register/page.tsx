@@ -10,7 +10,6 @@ import { registerSchema, type RegisterInput } from "@/lib/validations/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { TurnstileWidget } from "@/components/auth/TurnstileWidget";
 
 export default function RegisterPage() {
   const [showPass, setShowPass] = useState(false);
@@ -101,11 +100,6 @@ export default function RegisterPage() {
           />
           {errors.confirmPassword && <p className="text-xs text-destructive mt-1">{errors.confirmPassword.message}</p>}
         </div>
-
-        <TurnstileWidget
-          onVerify={(t) => { setTurnstileToken(t); setValue("turnstileToken", t); }}
-          onExpire={() => { setTurnstileToken(""); setValue("turnstileToken", ""); }}
-        />
 
         {serverError && <p className="text-sm text-destructive">{serverError}</p>}
 
