@@ -3,6 +3,7 @@ import { HeroBanner } from "@/components/store/HeroBanner";
 import { TrustBanner } from "@/components/store/TrustBanner";
 import { ProductCarousel } from "@/components/store/ProductCarousel";
 import { BrandLogos } from "@/components/store/BrandLogos";
+import { WeeklyBestCarousel } from "@/components/store/WeeklyBestCarousel";
 import { OlfactivePyramid } from "@/components/store/OlfactivePyramid";
 import type { ProductWithNotes } from "@/types";
 
@@ -25,6 +26,7 @@ export default async function HomePage() {
   let featured: ProductWithNotes[] = [];
   let newest: ProductWithNotes[] = [];
   let winter: ProductWithNotes[] = [];
+  let weeklyBest: ProductWithNotes[] = [];
   let pyramidProduct: ProductWithNotes | null = null;
 
   try {
@@ -34,6 +36,9 @@ export default async function HomePage() {
     winter = all.filter((p) =>
       p.occasion.some((o) => ["Invierno", "Otoño", "Noche"].includes(o))
     ).slice(0, 8);
+    weeklyBest = all.filter((p) => p.isFeatured).slice(0, 12).length >= 4
+      ? all.filter((p) => p.isFeatured).slice(0, 12)
+      : all.slice(0, 12);
     pyramidProduct = featured[0] ?? newest[0] ?? null;
   } catch {
     // DB not connected yet — render shell
@@ -67,6 +72,8 @@ export default async function HomePage() {
           </div>
         </section>
       )}
+
+      <WeeklyBestCarousel products={weeklyBest} />
 
       <BrandLogos />
     </div>
