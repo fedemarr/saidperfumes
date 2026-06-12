@@ -10,13 +10,11 @@ import { motion, AnimatePresence } from "framer-motion";
 const SLIDES = [
   {
     id: 1,
-    bg: "/images/hero-1.jpg",
     headline: "SAID PERFUMES",
     sub: "Más de 250 perfumes en stock",
   },
   {
     id: 2,
-    bg: "/images/hero-2.jpg",
     headline: "NUEVA COLECCIÓN",
     sub: "Perfumes árabes y de diseñador",
   },
@@ -53,15 +51,7 @@ export function HeroBanner() {
             {/* Overlay */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/70 z-10" />
 
-            {/* Try to load image, fallback to gradient */}
-            <div
-              className="absolute inset-0 bg-gradient-to-br from-black via-[#1a1200] to-black"
-              style={{
-                backgroundImage: `url(${SLIDES[current].bg})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }}
-            />
+            <div className="absolute inset-0 bg-gradient-to-br from-black via-[#1a1200] to-black" />
           </motion.div>
         </AnimatePresence>
 
