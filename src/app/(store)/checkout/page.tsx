@@ -28,7 +28,7 @@ export default function CheckoutPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  const { register, handleSubmit, formState: { errors }, setValue } = useForm<ShippingInput>({
+  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<ShippingInput>({
     resolver: zodResolver(shippingSchema),
     defaultValues: {
       name: session?.user.name ?? "",
@@ -137,7 +137,7 @@ export default function CheckoutPage() {
                 </div>
                 <div>
                   <Label>Provincia</Label>
-                  <Select onValueChange={(v) => setValue("province", v)}>
+                  <Select value={watch("province") ?? ""} onValueChange={(v) => setValue("province", v, { shouldValidate: true })}>
                     <SelectTrigger className="mt-1">
                       <SelectValue placeholder="Seleccioná tu provincia" />
                     </SelectTrigger>
