@@ -145,7 +145,7 @@ export default function CheckoutPage() {
                     <SelectTrigger className="mt-1">
                       <SelectValue placeholder="Seleccioná tu provincia" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent position="popper" className="max-h-60 overflow-y-auto">
                       {PROVINCES.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
                     </SelectContent>
                   </Select>
