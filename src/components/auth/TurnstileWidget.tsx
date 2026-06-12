@@ -5,18 +5,19 @@ import { useEffect, useRef } from "react";
 declare global {
   interface Window {
     turnstile?: {
-      render: (el: HTMLElement, opts: { sitekey: string; callback: (token: string) => void; "expired-callback": () => void; theme: string }) => string;
+      render: (el: HTMLElement, opts: object) => string;
       remove: (widgetId: string) => void;
     };
+    onloadTurnstileCallback?: () => void;
   }
 }
 
-interface TurnstileWidgetProps {
+interface Props {
   onVerify: (token: string) => void;
   onExpire?: () => void;
 }
 
-export function TurnstileWidget({ onVerify, onExpire }: TurnstileWidgetProps) {
+export function TurnstileWidget({ onVerify, onExpire }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
   const onVerifyRef = useRef(onVerify);
@@ -26,11 +27,13 @@ export function TurnstileWidget({ onVerify, onExpire }: TurnstileWidgetProps) {
   useEffect(() => { onExpireRef.current = onExpire; }, [onExpire]);
 
   useEffect(() => {
+    const sitekey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
+
     function renderWidget() {
-      if (!containerRef.current || !window.turnstile) return;
+      if (!containerRef.current || !window.turnstile || widgetIdRef.current) return;
       widgetIdRef.current = window.turnstile.render(containerRef.current, {
-        sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "",
-        callback: (token) => onVerifyRef.current(token),
+        sitekey,
+        callback: (token: string) => onVerifyRef.current(token),
         "expired-callback": () => onExpireRef.current?.(),
         theme: "dark",
       });
@@ -38,21 +41,31 @@ export function TurnstileWidget({ onVerify, onExpire }: TurnstileWidgetProps) {
 
     if (window.turnstile) {
       renderWidget();
-    } else {
-      const script = document.createElement("script");
-      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
-      script.async = true;
-      script.defer = true;
-      script.onload = renderWidget;
-      document.head.appendChild(script);
+      return;
     }
+
+    const existing = document.querySelector('script[src*="challenges.cloudflare.com/turnstile"]');
+    if (existing) {
+      const interval = setInterval(() => {
+        if (window.turnstile) { clearInterval(interval); renderWidget(); }
+      }, 100);
+      return () => clearInterval(interval);
+    }
+
+    window.onloadTurnstileCallback = renderWidget;
+    const script = document.createElement("script");
+    script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback&render=explicit";
+    script.async = true;
+    script.defer = true;
+    document.head.appendChild(script);
 
     return () => {
       if (widgetIdRef.current && window.turnstile) {
         window.turnstile.remove(widgetIdRef.current);
+        widgetIdRef.current = null;
       }
     };
   }, []);
 
-  return <div ref={containerRef} className="my-2" />;
+  return <div ref={containerRef} className="my-4" />;
 }
