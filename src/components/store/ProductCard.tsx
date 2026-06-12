@@ -47,7 +47,7 @@ export function ProductCard({ product }: ProductCardProps) {
             {product.freeShipping && <Badge variant="outline">Envío gratis</Badge>}
           </div>
 
-          {/* Image */}
+          {/* Image + hover button */}
           <div className="relative aspect-square overflow-hidden bg-[#0D0D0D]">
             <Image
               src={product.images[0] ?? "/placeholder.jpg"}
@@ -56,16 +56,14 @@ export function ProductCard({ product }: ProductCardProps) {
               className="object-contain p-4 transition-transform duration-500 group-hover:scale-105"
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             />
+            <button
+              onClick={handleAddToCart}
+              className="absolute bottom-0 left-0 right-0 flex items-center justify-center gap-2 bg-gold text-black text-xs font-bold tracking-widest uppercase py-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300"
+            >
+              <ShoppingBag className="h-4 w-4" />
+              Agregar
+            </button>
           </div>
-
-          {/* Add to cart overlay */}
-          <button
-            onClick={handleAddToCart}
-            className="absolute bottom-[72px] left-0 right-0 flex items-center justify-center gap-2 bg-gold text-black text-xs font-bold tracking-widest uppercase py-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300"
-          >
-            <ShoppingBag className="h-4 w-4" />
-            Agregar
-          </button>
 
           {/* Info */}
           <div className="p-3 border-t border-border">

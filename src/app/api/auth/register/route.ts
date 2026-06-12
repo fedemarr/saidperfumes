@@ -12,9 +12,12 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const data = registerSchema.parse(body);
 
-    const turnstileOk = await verifyTurnstile(data.turnstileToken);
-    if (!turnstileOk) {
-      return NextResponse.json({ error: "Verificación fallida" }, { status: 400 });
+    // Only verify Turnstile if token provided (widget may not load on all domains yet)
+    if (data.turnstileToken) {
+      const turnstileOk = await verifyTurnstile(data.turnstileToken);
+      if (!turnstileOk) {
+        return NextResponse.json({ error: "Verificación fallida" }, { status: 400 });
+      }
     }
 
     const existing = await prisma.user.findUnique({ where: { email: data.email } });

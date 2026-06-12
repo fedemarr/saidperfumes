@@ -109,7 +109,7 @@ export default function RegisterPage() {
 
         {serverError && <p className="text-sm text-destructive">{serverError}</p>}
 
-        <Button type="submit" className="w-full" disabled={isSubmitting || !turnstileToken}>
+        <Button type="submit" className="w-full" disabled={isSubmitting}>
           {isSubmitting ? "Creando cuenta..." : "Crear cuenta"}
         </Button>
       </form>
