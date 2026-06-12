@@ -61,7 +61,6 @@ export default function CheckoutPage() {
 
   async function placeOrder() {
     if (!shippingData) return;
-    if (!turnstileToken) { setError("Completá la verificación de seguridad."); return; }
     setSubmitting(true);
     setError("");
     try {
@@ -216,7 +215,7 @@ export default function CheckoutPage() {
 
               <div className="flex gap-3">
                 <Button variant="outline" onClick={() => setStep(1)}>Volver</Button>
-                <Button onClick={placeOrder} disabled={submitting || !turnstileToken}>
+                <Button onClick={placeOrder} disabled={submitting}>
                   {submitting ? "Procesando..." : "Confirmar pedido"}
                 </Button>
               </div>

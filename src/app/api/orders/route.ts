@@ -13,9 +13,11 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const data = checkoutSchema.parse(body);
 
-    const turnstileOk = await verifyTurnstile(body.turnstileToken ?? "");
-    if (!turnstileOk) {
-      return NextResponse.json({ error: "Verificación de seguridad fallida. Recargá la página e intentá de nuevo." }, { status: 400 });
+    if (body.turnstileToken) {
+      const turnstileOk = await verifyTurnstile(body.turnstileToken);
+      if (!turnstileOk) {
+        return NextResponse.json({ error: "Verificación de seguridad fallida. Recargá la página e intentá de nuevo." }, { status: 400 });
+      }
     }
 
     const { items }: { items: { productId: string; quantity: number }[] } = body;
