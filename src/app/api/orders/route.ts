@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { checkoutSchema } from "@/lib/validations/order";
 import { generateOrderNumber, hasFreeShipping } from "@/lib/utils";
 import { sendOrderConfirmationEmail, sendNewOrderAdminEmail } from "@/lib/email";
+import { verifyTurnstile } from "@/lib/turnstile";
 import { z } from "zod";
 
 export async function POST(req: NextRequest) {
@@ -11,6 +12,11 @@ export async function POST(req: NextRequest) {
     const session = await auth();
     const body = await req.json();
     const data = checkoutSchema.parse(body);
+
+    const turnstileOk = await verifyTurnstile(body.turnstileToken ?? "");
+    if (!turnstileOk) {
+      return NextResponse.json({ error: "Verificación de seguridad fallida. Recargá la página e intentá de nuevo." }, { status: 400 });
+    }
 
     const { items }: { items: { productId: string; quantity: number }[] } = body;
     if (!items?.length) {
