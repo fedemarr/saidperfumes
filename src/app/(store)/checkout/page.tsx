@@ -14,7 +14,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatPrice, PROVINCES } from "@/lib/utils";
-import { TurnstileWidget } from "@/components/auth/TurnstileWidget";
 
 type Step = 1 | 2 | 3;
 type PaymentMethod = "TRANSFERENCIA" | "TARJETA";
@@ -28,7 +27,6 @@ export default function CheckoutPage() {
   const [orderNumber, setOrderNumber] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const [turnstileToken, setTurnstileToken] = useState("");
 
   const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<ShippingInput>({
     resolver: zodResolver(shippingSchema),
@@ -206,12 +204,7 @@ export default function CheckoutPage() {
                 </div>
               )}
 
-              <TurnstileWidget
-                onVerify={(token) => { setTurnstileToken(token); setError(""); }}
-                onExpire={() => setTurnstileToken("")}
-              />
-
-              {error && <p className="text-sm text-destructive">{error}</p>}
+{error && <p className="text-sm text-destructive">{error}</p>}
 
               <div className="flex gap-3">
                 <Button variant="outline" onClick={() => setStep(1)}>Volver</Button>
