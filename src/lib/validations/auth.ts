@@ -3,7 +3,6 @@ import { z } from "zod";
 export const loginSchema = z.object({
   email: z.string().email("Email inválido"),
   password: z.string().min(1, "Ingresá tu contraseña"),
-  turnstileToken: z.string().min(1, "Completá la verificación"),
 });
 
 export const registerSchema = z
@@ -16,7 +15,6 @@ export const registerSchema = z
       .regex(/[A-Z]/, "Debe contener al menos una mayúscula")
       .regex(/[0-9]/, "Debe contener al menos un número"),
     confirmPassword: z.string(),
-    turnstileToken: z.string().min(1, "Completá la verificación"),
   })
   .refine((d) => d.password === d.confirmPassword, {
     message: "Las contraseñas no coinciden",
@@ -25,7 +23,6 @@ export const registerSchema = z
 
 export const forgotPasswordSchema = z.object({
   email: z.string().email("Email inválido"),
-  turnstileToken: z.string().min(1, "Completá la verificación"),
 });
 
 export const resetPasswordSchema = z
