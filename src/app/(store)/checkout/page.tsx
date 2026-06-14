@@ -69,7 +69,6 @@ export default function CheckoutPage() {
           shipping: shippingData,
           paymentMethod,
           items: items.map((i) => ({ productId: i.productId, quantity: i.quantity })),
-          turnstileToken,
         }),
       });
       const json = await res.json();

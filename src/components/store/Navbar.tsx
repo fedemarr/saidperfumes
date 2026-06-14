@@ -61,7 +61,7 @@ export function Navbar() {
             </form>
 
             {/* Logo */}
-            <div className="flex-1 flex justify-center">
+            <div className="flex-1 flex justify-center pl-16">
               <Link href="/" className="flex flex-col items-center">
                 <span className="font-serif text-2xl font-bold tracking-[0.3em] text-white uppercase">SAID</span>
                 <span className="text-[9px] tracking-[0.5em] text-gold uppercase">Perfumes</span>

@@ -114,16 +114,15 @@ export function WeeklyBestCarousel({ products }: WeeklyBestCarouselProps) {
                       />
                       {/* Hover overlay */}
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
+                      {/* Add to cart */}
+                      <button
+                        onClick={(e) => handleAddToCart(e, product)}
+                        className="absolute bottom-0 left-0 right-0 flex items-center justify-center gap-2 bg-gold text-black text-xs font-bold tracking-widest uppercase py-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300"
+                      >
+                        <ShoppingBag className="h-4 w-4" />
+                        Agregar al carrito
+                      </button>
                     </div>
-
-                    {/* Add to cart */}
-                    <button
-                      onClick={(e) => handleAddToCart(e, product)}
-                      className="absolute bottom-[88px] left-0 right-0 flex items-center justify-center gap-2 bg-gold text-black text-xs font-bold tracking-widest uppercase py-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300"
-                    >
-                      <ShoppingBag className="h-4 w-4" />
-                      Agregar al carrito
-                    </button>
 
                     {/* Info */}
                     <div className="p-4 border-t border-border">
