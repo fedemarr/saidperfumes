@@ -76,7 +76,11 @@ export default function CheckoutPage() {
       if (!res.ok) { setError(json.error ?? "Error al crear la orden"); return; }
       setOrderNumber(json.orderNumber);
       clearCart();
-      setStep(3);
+      if (paymentMethod === "TARJETA") {
+        window.location.href = "https://link.mercadopago.com.ar/saidperfumes";
+      } else {
+        setStep(3);
+      }
     } catch {
       setError("Error de conexión. Intentá de nuevo.");
     } finally {
@@ -204,12 +208,20 @@ export default function CheckoutPage() {
                 </div>
               )}
 
+              {paymentMethod === "TARJETA" && (
+                <div className="bg-card border border-gold/30 p-5">
+                  <p className="text-sm font-semibold text-gold mb-2">Pago con MercadoPago</p>
+                  <p className="text-sm text-muted-foreground">Al confirmar serás redirigido a MercadoPago para completar el pago con tu tarjeta en hasta 6 cuotas sin interés.</p>
+                  <p className="text-sm text-gold font-semibold mt-2">Total: {formatPrice(total)}</p>
+                </div>
+              )}
+
 {error && <p className="text-sm text-destructive">{error}</p>}
 
               <div className="flex gap-3">
                 <Button variant="outline" onClick={() => setStep(1)}>Volver</Button>
                 <Button onClick={placeOrder} disabled={submitting}>
-                  {submitting ? "Procesando..." : "Confirmar pedido"}
+                  {submitting ? "Procesando..." : paymentMethod === "TARJETA" ? "Pagar con MercadoPago" : "Confirmar pedido"}
                 </Button>
               </div>
             </div>
