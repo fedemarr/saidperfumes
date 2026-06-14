@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { ChevronLeft, ChevronRight, Percent, CreditCard, Truck, Package } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -28,24 +29,26 @@ export function HeroBanner() {
   return (
     <div>
       <div className="relative w-full overflow-hidden bg-black" style={{ aspectRatio: "1440/600" }}>
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={current}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.8 }}
-            className="absolute inset-0"
-          >
-            <Image
-              src={SLIDES[current].bg}
-              alt={`Banner ${current + 1}`}
-              fill
-              className="object-cover object-center"
-              priority={current === 0}
-            />
-          </motion.div>
-        </AnimatePresence>
+        <Link href="/productos" className="absolute inset-0 z-10">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={current}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.8 }}
+              className="absolute inset-0"
+            >
+              <Image
+                src={SLIDES[current].bg}
+                alt={`Banner ${current + 1}`}
+                fill
+                className="object-cover object-center"
+                priority={current === 0}
+              />
+            </motion.div>
+          </AnimatePresence>
+        </Link>
 
         {/* Arrows */}
         <button
