@@ -89,7 +89,8 @@ export async function POST(req: NextRequest) {
       shippingCost: Number(order.shippingCost),
       paymentMethod: order.paymentMethod,
       shippingAddress: order.shippingAddress as { street: string; city: string; province: string; zip: string },
-    }).catch(console.error);
+    }).then(() => console.log(`[email] confirmation sent to ${guestEmail}`))
+      .catch((err) => console.error("[email] confirmation failed:", err));
 
     sendNewOrderAdminEmail({
       orderNumber: order.orderNumber,
