@@ -8,14 +8,12 @@ import { forgotPasswordSchema, type ForgotPasswordInput } from "@/lib/validation
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { TurnstileWidget } from "@/components/auth/TurnstileWidget";
 
 export default function ForgotPasswordPage() {
-  const [turnstileToken, setTurnstileToken] = useState("");
   const [done, setDone] = useState(false);
   const [serverError, setServerError] = useState("");
 
-  const { register, handleSubmit, formState: { errors, isSubmitting }, setValue } = useForm<ForgotPasswordInput>({
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<ForgotPasswordInput>({
     resolver: zodResolver(forgotPasswordSchema),
   });
 
@@ -24,7 +22,7 @@ export default function ForgotPasswordPage() {
     const res = await fetch("/api/auth/forgot-password", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...data, turnstileToken }),
+      body: JSON.stringify(data),
     });
     const json = await res.json();
     if (!res.ok) { setServerError(json.error); return; }
@@ -53,14 +51,9 @@ export default function ForgotPasswordPage() {
           {errors.email && <p className="text-xs text-destructive mt-1">{errors.email.message}</p>}
         </div>
 
-        <TurnstileWidget
-          onVerify={(t) => { setTurnstileToken(t); setValue("turnstileToken", t); }}
-          onExpire={() => { setTurnstileToken(""); setValue("turnstileToken", ""); }}
-        />
-
         {serverError && <p className="text-sm text-destructive">{serverError}</p>}
 
-        <Button type="submit" className="w-full" disabled={isSubmitting || !turnstileToken}>
+        <Button type="submit" className="w-full" disabled={isSubmitting}>
           {isSubmitting ? "Enviando..." : "Enviar enlace"}
         </Button>
       </form>
