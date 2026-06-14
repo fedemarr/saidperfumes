@@ -11,18 +11,16 @@ import { loginSchema, type LoginInput } from "@/lib/validations/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { TurnstileWidget } from "@/components/auth/TurnstileWidget";
 
 function LoginForm() {
   const [showPass, setShowPass] = useState(false);
-  const [turnstileToken, setTurnstileToken] = useState("");
   const [serverError, setServerError] = useState("");
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") ?? "/";
   const verified = searchParams.get("verified");
 
-  const { register, handleSubmit, formState: { errors, isSubmitting }, setValue } = useForm<LoginInput>({
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
   });
 
@@ -90,14 +88,9 @@ function LoginForm() {
           </Link>
         </div>
 
-        <TurnstileWidget
-          onVerify={(t) => { setTurnstileToken(t); setValue("turnstileToken", t); }}
-          onExpire={() => { setTurnstileToken(""); setValue("turnstileToken", ""); }}
-        />
-
         {serverError && <p className="text-sm text-destructive">{serverError}</p>}
 
-        <Button type="submit" className="w-full" disabled={isSubmitting || !turnstileToken}>
+        <Button type="submit" className="w-full" disabled={isSubmitting}>
           {isSubmitting ? "Ingresando..." : "Iniciar sesión"}
         </Button>
       </form>
