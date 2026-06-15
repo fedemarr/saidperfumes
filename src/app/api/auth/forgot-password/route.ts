@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 import { forgotPasswordSchema } from "@/lib/validations/auth";
-import { verifyTurnstile } from "@/lib/turnstile";
 import { sendPasswordResetEmail } from "@/lib/email";
 import { z } from "zod";
 
@@ -10,11 +9,6 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const data = forgotPasswordSchema.parse(body);
-
-    const turnstileOk = await verifyTurnstile(data.turnstileToken);
-    if (!turnstileOk) {
-      return NextResponse.json({ error: "Verificación fallida" }, { status: 400 });
-    }
 
     const user = await prisma.user.findUnique({ where: { email: data.email } });
     // Always return success to avoid email enumeration
