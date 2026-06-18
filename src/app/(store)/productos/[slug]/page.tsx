@@ -12,7 +12,7 @@ import { OlfactivePyramid } from "@/components/store/OlfactivePyramid";
 import { ProductCard } from "@/components/store/ProductCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCartStore } from "@/stores/cartStore";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, getCardPrice } from "@/lib/utils";
 import type { ProductWithNotes } from "@/types";
 
 export default function ProductDetailPage() {
@@ -81,8 +81,9 @@ export default function ProductDetailPage() {
     );
   }
 
-  const transferPrice = product.priceTransfer ?? product.price * 0.8;
-  const discountPct = Math.round((1 - transferPrice / product.price) * 100);
+  const transferPrice = product.priceTransfer ?? product.price;
+  const cardPrice = getCardPrice(product.price);
+  const discountPct = transferPrice < cardPrice ? Math.round((1 - transferPrice / cardPrice) * 100) : 0;
   const genderLabel = product.gender === "MASCULINO" ? "Para él" : product.gender === "FEMENINO" ? "Para ella" : "Unisex";
 
   return (
@@ -143,13 +144,11 @@ export default function ProductDetailPage() {
           </div>
 
           <div className="space-y-1">
-            {product.price !== transferPrice && (
-              <p className="text-sm text-muted-foreground line-through">{formatPrice(product.price)}</p>
-            )}
             <p className="text-3xl font-bold text-white">{formatPrice(transferPrice)}</p>
-            <p className="text-sm text-gold">{formatPrice(transferPrice)} con Transferencia o depósito</p>
-            {product.price !== transferPrice && (
-              <p className="text-xs text-muted-foreground">{formatPrice(product.price)} con tarjeta hasta 6 cuotas sin interés</p>
+            <p className="text-sm text-gold">Precio transferencia / efectivo</p>
+            <p className="text-sm text-muted-foreground">{formatPrice(cardPrice)} con tarjeta en cuotas</p>
+            {discountPct > 0 && (
+              <p className="text-xs text-muted-foreground">Ahorrás {discountPct}% pagando con transferencia</p>
             )}
           </div>
 

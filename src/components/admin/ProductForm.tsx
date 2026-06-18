@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Upload, X } from "lucide-react";
 import { productSchema, type ProductInput } from "@/lib/validations/product";
 import { slugify, BRANDS, OCCASIONS } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -49,6 +51,8 @@ function TagInput({ value, onChange, placeholder }: { value: string[]; onChange:
 export function ProductForm({ product }: ProductFormProps) {
   const router = useRouter();
   const [serverError, setServerError] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const isEdit = !!product;
 
   const { register, handleSubmit, control, setValue, formState: { errors, isSubmitting } } = useForm<ProductInput>({
@@ -74,7 +78,21 @@ export function ProductForm({ product }: ProductFormProps) {
         },
   });
 
-  
+  async function uploadImage(file: File, currentImages: string[], onChange: (v: string[]) => void) {
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/upload", { method: "POST", body: fd });
+      const json = await res.json();
+      if (!res.ok) { setServerError(json.error ?? "Error al subir imagen"); return; }
+      onChange([...currentImages, json.url]);
+    } catch {
+      setServerError("Error al subir imagen");
+    } finally {
+      setUploading(false);
+    }
+  }
 
   async function onSubmit(data: ProductInput) {
     setServerError("");
@@ -212,9 +230,56 @@ export function ProductForm({ product }: ProductFormProps) {
       </div>
 
       <div>
-        <Label className="mb-2 block">URLs de imágenes</Label>
+        <Label className="mb-2 block">Imágenes del producto</Label>
         <Controller name="images" control={control} render={({ field }) => (
-          <TagInput value={field.value} onChange={field.onChange} placeholder="https://..." />
+          <div className="space-y-3">
+            {/* Thumbnails */}
+            {field.value.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {field.value.map((url, i) => (
+                  <div key={i} className="relative w-20 h-20 border border-border group">
+                    <Image src={url} alt="" fill className="object-contain p-1" />
+                    <button
+                      type="button"
+                      onClick={() => field.onChange(field.value.filter((_, j) => j !== i))}
+                      className="absolute top-0.5 right-0.5 bg-destructive text-white rounded-full w-4 h-4 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X className="h-2.5 w-2.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Upload button */}
+            <div className="flex gap-2 flex-wrap">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={uploading}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Upload className="h-4 w-4 mr-2" />
+                {uploading ? "Subiendo..." : "Subir imagen"}
+              </Button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) uploadImage(file, field.value, field.onChange);
+                  e.target.value = "";
+                }}
+              />
+              <span className="text-xs text-muted-foreground self-center">o pegá una URL:</span>
+            </div>
+
+            {/* URL input fallback */}
+            <TagInput value={[]} onChange={(newUrls) => field.onChange([...field.value, ...newUrls])} placeholder="https://..." />
+          </div>
         )} />
         {errors.images && <p className="text-xs text-destructive mt-1">{errors.images.message}</p>}
       </div>

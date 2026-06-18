@@ -68,6 +68,8 @@ export interface OrderWithItems {
   shippedAt: Date | null;
   deliveredAt: Date | null;
   createdAt: Date;
+  guestEmail: string | null;
+  guestName: string | null;
   items: {
     id: string;
     quantity: number;
@@ -85,7 +87,7 @@ export interface OrderWithItems {
     name: string | null;
     email: string;
     phone: string | null;
-  };
+  } | null;
 }
 
 export interface ProductFilters {

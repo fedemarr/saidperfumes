@@ -6,22 +6,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
-import { formatPrice } from "@/lib/utils";
-import { BRANDS } from "@/lib/utils";
-
-const CATEGORIES = [
-  { value: "ARABE", label: "Árabe" },
-  { value: "DESIGNER", label: "Diseñador" },
-  { value: "NICHE", label: "Nicho" },
-];
+import { formatPrice, BRANDS_BY_CATEGORY } from "@/lib/utils";
 
 const GENDERS = [
   { value: "MASCULINO", label: "Masculino" },
   { value: "FEMENINO", label: "Femenino" },
   { value: "UNISEX", label: "Unisex" },
 ];
-
-const TOP_BRANDS = BRANDS.slice(0, 10);
 
 export function ProductFilters() {
   const router = useRouter();
@@ -67,24 +58,6 @@ export function ProductFilters() {
       )}
 
       <div>
-        <h3 className="text-xs font-semibold tracking-widest uppercase text-white mb-3">Categorías</h3>
-        <div className="space-y-2">
-          {CATEGORIES.map(({ value, label }) => (
-            <div key={value} className="flex items-center gap-2">
-              <Checkbox
-                id={`cat-${value}`}
-                checked={getParam("category").includes(value)}
-                onCheckedChange={() => toggle("category", value)}
-              />
-              <Label htmlFor={`cat-${value}`} className="text-muted-foreground font-normal cursor-pointer">
-                {label}
-              </Label>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div>
         <h3 className="text-xs font-semibold tracking-widest uppercase text-white mb-3">Género</h3>
         <div className="space-y-2">
           {GENDERS.map(({ value, label }) => (
@@ -102,23 +75,35 @@ export function ProductFilters() {
         </div>
       </div>
 
-      <div>
-        <h3 className="text-xs font-semibold tracking-widest uppercase text-white mb-3">Marca</h3>
-        <div className="space-y-2">
-          {TOP_BRANDS.map((brand) => (
-            <div key={brand} className="flex items-center gap-2">
-              <Checkbox
-                id={`brand-${brand}`}
-                checked={getParam("brand").includes(brand)}
-                onCheckedChange={() => toggle("brand", brand)}
-              />
-              <Label htmlFor={`brand-${brand}`} className="text-muted-foreground font-normal cursor-pointer text-xs">
-                {brand}
-              </Label>
-            </div>
-          ))}
+      {BRANDS_BY_CATEGORY.map(({ label, value, brands }) => (
+        <div key={value}>
+          <button
+            onClick={() => toggle("category", value)}
+            className={`w-full flex items-center justify-between mb-2 group ${getParam("category").includes(value) ? "text-gold" : "text-white"}`}
+          >
+            <h3 className="text-xs font-semibold tracking-widest uppercase">{label}</h3>
+            <Checkbox
+              checked={getParam("category").includes(value)}
+              onCheckedChange={() => toggle("category", value)}
+              className="pointer-events-none"
+            />
+          </button>
+          <div className="space-y-1.5 pl-1">
+            {brands.map((brand) => (
+              <div key={brand} className="flex items-center gap-2">
+                <Checkbox
+                  id={`brand-${brand}`}
+                  checked={getParam("brand").includes(brand)}
+                  onCheckedChange={() => toggle("brand", brand)}
+                />
+                <Label htmlFor={`brand-${brand}`} className="text-muted-foreground font-normal cursor-pointer text-xs">
+                  {brand}
+                </Label>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      ))}
 
       <div>
         <h3 className="text-xs font-semibold tracking-widest uppercase text-white mb-3">Precio</h3>

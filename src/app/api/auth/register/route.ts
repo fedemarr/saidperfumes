@@ -3,7 +3,6 @@ import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 import { registerSchema } from "@/lib/validations/auth";
-import { verifyTurnstile } from "@/lib/turnstile";
 import { sendVerificationEmail } from "@/lib/email";
 import { z } from "zod";
 
@@ -11,14 +10,6 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const data = registerSchema.parse(body);
-
-    // Only verify Turnstile if token provided (widget may not load on all domains yet)
-    if (data.turnstileToken) {
-      const turnstileOk = await verifyTurnstile(data.turnstileToken);
-      if (!turnstileOk) {
-        return NextResponse.json({ error: "Verificación fallida" }, { status: 400 });
-      }
-    }
 
     const existing = await prisma.user.findUnique({ where: { email: data.email } });
     if (existing) {

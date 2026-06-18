@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { formatPrice, PROVINCES } from "@/lib/utils";
+import { formatPrice, PROVINCES, getCardPrice } from "@/lib/utils";
 
 type Step = 1 | 2 | 3;
 type PaymentMethod = "TRANSFERENCIA" | "TARJETA";
@@ -45,12 +45,10 @@ export default function CheckoutPage() {
     );
   }
 
-  const total = paymentMethod === "TRANSFERENCIA"
-    ? items.reduce((s, i) => s + (i.priceTransfer ?? i.price * 0.8) * i.quantity, 0)
-    : items.reduce((s, i) => s + i.price * i.quantity, 0);
-
-  const regularTotal = items.reduce((s, i) => s + i.price * i.quantity, 0);
-  const discount = regularTotal - total;
+  const transferTotal = items.reduce((s, i) => s + (i.priceTransfer ?? i.price) * i.quantity, 0);
+  const cardTotal = items.reduce((s, i) => s + getCardPrice(i.price) * i.quantity, 0);
+  const total = paymentMethod === "TRANSFERENCIA" ? transferTotal : cardTotal;
+  const discount = paymentMethod === "TRANSFERENCIA" ? cardTotal - transferTotal : 0;
 
   async function onShippingSubmit(data: ShippingInput) {
     setShippingData(data);
@@ -177,7 +175,7 @@ export default function CheckoutPage() {
                     <span className="font-semibold text-white">Transferencia bancaria</span>
                     {paymentMethod === "TRANSFERENCIA" && <Check className="h-4 w-4 text-gold" />}
                   </div>
-                  <span className="text-xs text-gold font-bold">20% de descuento</span>
+                  <span className="text-xs text-gold font-bold">Precio especial</span>
                   <p className="text-xs text-muted-foreground mt-1">CBU / Alias / Mercado Pago</p>
                 </button>
 
@@ -191,8 +189,8 @@ export default function CheckoutPage() {
                     <span className="font-semibold text-white">Tarjeta de crédito</span>
                     {paymentMethod === "TARJETA" && <Check className="h-4 w-4 text-gold" />}
                   </div>
-                  <span className="text-xs text-gold font-bold">Hasta 6 cuotas sin interés</span>
-                  <p className="text-xs text-muted-foreground mt-1">Visa, Mastercard, Amex y más</p>
+                  <span className="text-xs text-gold font-bold">Hasta 12 cuotas</span>
+                  <p className="text-xs text-muted-foreground mt-1">+15% recargo · Visa, Mastercard y más</p>
                 </button>
               </div>
 
@@ -210,7 +208,8 @@ export default function CheckoutPage() {
               {paymentMethod === "TARJETA" && (
                 <div className="bg-card border border-gold/30 p-5">
                   <p className="text-sm font-semibold text-gold mb-2">Pago con MercadoPago</p>
-                  <p className="text-sm text-muted-foreground">Al confirmar serás redirigido a MercadoPago para completar el pago con tu tarjeta en hasta 6 cuotas sin interés.</p>
+                  <p className="text-sm text-muted-foreground">Al confirmar serás redirigido a MercadoPago para completar el pago con tu tarjeta en hasta 12 cuotas.</p>
+                  <p className="text-xs text-muted-foreground mt-1">El precio incluye un recargo del 15% por pago con tarjeta.</p>
                   <p className="text-sm text-gold font-semibold mt-2">Total: {formatPrice(total)}</p>
                 </div>
               )}
@@ -267,7 +266,7 @@ export default function CheckoutPage() {
                     <p className="text-xs text-muted-foreground">x{item.quantity}</p>
                   </div>
                   <p className="text-xs text-gold flex-shrink-0">
-                    {formatPrice((paymentMethod === "TRANSFERENCIA" ? (item.priceTransfer ?? item.price * 0.8) : item.price) * item.quantity)}
+                    {formatPrice((paymentMethod === "TRANSFERENCIA" ? (item.priceTransfer ?? item.price) : getCardPrice(item.price)) * item.quantity)}
                   </p>
                 </div>
               ))}
@@ -275,7 +274,7 @@ export default function CheckoutPage() {
             <div className="border-t border-border pt-3 space-y-2 text-sm">
               {paymentMethod === "TRANSFERENCIA" && discount > 0 && (
                 <div className="flex justify-between text-success">
-                  <span>Descuento 20%</span>
+                  <span>Descuento transferencia</span>
                   <span>-{formatPrice(discount)}</span>
                 </div>
               )}

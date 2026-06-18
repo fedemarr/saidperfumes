@@ -91,6 +91,33 @@ export const BRANDS = [
   "DHERRERA",
 ];
 
+export const BRANDS_BY_CATEGORY: { label: string; value: string; brands: string[] }[] = [
+  {
+    label: "Árabe",
+    value: "ARABE",
+    brands: ["LATTAFA", "ARMAF", "AFNAN", "RASASI", "FRENCH AVENUE", "AL HARAMAIN", "BHARARA", "AL WATANIAH", "RAYHAAN", "MAISON ALHAMBRA", "EMPER"],
+  },
+  {
+    label: "Diseñador",
+    value: "DESIGNER",
+    brands: ["VALENTINO", "JEAN PAUL GAULTIER", "GIORGIO"],
+  },
+  {
+    label: "Nicho",
+    value: "NICHE",
+    brands: ["XERJOFF"],
+  },
+  {
+    label: "Nacional",
+    value: "NATIONAL",
+    brands: ["DHERRERA"],
+  },
+];
+
+export function getCardPrice(price: number): number {
+  return Math.round(price * 1.15);
+}
+
 export const OCCASIONS = [
   "Día",
   "Noche",

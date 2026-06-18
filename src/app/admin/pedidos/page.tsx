@@ -91,7 +91,9 @@ export default function AdminPedidosPage() {
                 onClick={() => setExpanded(expanded === order.id ? null : order.id)}
               >
                 <span className="text-gold font-mono text-sm">#{order.orderNumber}</span>
-                <span className="text-sm text-white flex-1">{order.user.name ?? order.user.email}</span>
+                <span className="text-sm text-white flex-1">
+                  {order.user?.name ?? order.guestName ?? order.user?.email ?? order.guestEmail ?? "—"}
+                </span>
                 <span className="text-sm">{new Date(order.createdAt).toLocaleDateString("es-AR")}</span>
                 <span className="text-sm font-semibold">{formatPrice(order.total)}</span>
                 <span className={`text-xs font-bold uppercase ${STATUS_COLORS[order.status] ?? "text-white"}`}>
@@ -105,9 +107,9 @@ export default function AdminPedidosPage() {
                   <div className="grid md:grid-cols-2 gap-4 text-sm">
                     <div>
                       <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">Cliente</p>
-                      <p>{order.user.name}</p>
-                      <p className="text-muted-foreground">{order.user.email}</p>
-                      {order.user.phone && <p className="text-muted-foreground">{order.user.phone}</p>}
+                      <p>{order.user?.name ?? order.guestName ?? "—"}</p>
+                      <p className="text-muted-foreground">{order.user?.email ?? order.guestEmail ?? "—"}</p>
+                      {order.user?.phone && <p className="text-muted-foreground">{order.user.phone}</p>}
                     </div>
                     <div>
                       <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">Envío</p>

@@ -9,7 +9,10 @@ const AUTH_ONLY = ["/login", "/register", "/forgot-password"];
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  // NextAuth v5 changed cookie prefix from "next-auth" to "authjs"
+  const isSecure = process.env.NODE_ENV === "production";
+  const cookieName = isSecure ? "__Secure-authjs.session-token" : "authjs.session-token";
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET, cookieName });
 
   if (ADMIN_ONLY.some((p) => pathname.startsWith(p))) {
     if (!token) return NextResponse.redirect(new URL("/login", req.url));

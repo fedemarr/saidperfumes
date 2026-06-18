@@ -61,8 +61,8 @@ export default function AdminPagosPage() {
               <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                 <div className="space-y-1">
                   <p className="text-gold font-mono">#{order.orderNumber}</p>
-                  <p className="text-sm text-white">{order.user.name ?? order.user.email}</p>
-                  <p className="text-xs text-muted-foreground">{order.user.email}</p>
+                  <p className="text-sm text-white">{order.user?.name ?? order.guestName ?? order.user?.email ?? order.guestEmail ?? "—"}</p>
+                  <p className="text-xs text-muted-foreground">{order.user?.email ?? order.guestEmail ?? "—"}</p>
                   <p className="text-lg font-bold text-white">{formatPrice(order.total)}</p>
                   <p className="text-xs text-muted-foreground">
                     {new Date(order.createdAt).toLocaleDateString("es-AR", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}

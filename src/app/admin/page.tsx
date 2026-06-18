@@ -92,7 +92,7 @@ export default function AdminDashboard() {
               <div key={o.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
                 <div>
                   <p className="text-sm text-gold">#{o.orderNumber}</p>
-                  <p className="text-xs text-muted-foreground">{o.user.name ?? o.user.email}</p>
+                  <p className="text-xs text-muted-foreground">{o.user?.name ?? o.guestName ?? o.user?.email ?? o.guestEmail ?? "—"}</p>
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-medium">{formatPrice(o.total)}</p>

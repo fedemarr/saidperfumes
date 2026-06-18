@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
 import { motion } from "framer-motion";
 import { useCartStore } from "@/stores/cartStore";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, getCardPrice } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import type { ProductWithNotes } from "@/types";
 
@@ -15,8 +15,9 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   const { addItem } = useCartStore();
-  const transferPrice = product.priceTransfer ?? product.price * 0.8;
-  const discountPct = Math.round((1 - transferPrice / product.price) * 100);
+  const transferPrice = product.priceTransfer ?? product.price;
+  const cardPrice = getCardPrice(product.price);
+  const discountPct = transferPrice < cardPrice ? Math.round((1 - transferPrice / cardPrice) * 100) : 0;
 
   function handleAddToCart(e: React.MouseEvent) {
     e.preventDefault();
@@ -69,17 +70,13 @@ export function ProductCard({ product }: ProductCardProps) {
           <div className="p-3 border-t border-border">
             <p className="text-[10px] text-gold uppercase tracking-wider mb-0.5">{product.brand}</p>
             <p className="text-sm text-white font-medium line-clamp-2 leading-snug">{product.name}</p>
-            <div className="mt-2 flex flex-col">
-              {product.priceTransfer && product.priceTransfer < product.price && (
-                <span className="text-xs text-muted-foreground line-through">
-                  {formatPrice(product.price)}
-                </span>
-              )}
+            <div className="mt-2 flex flex-col gap-0.5">
               <span className="text-base font-semibold text-white">
                 {formatPrice(transferPrice)}
               </span>
+              <span className="text-[10px] text-gold">Transferencia / efectivo</span>
               <span className="text-[10px] text-muted-foreground">
-                {formatPrice(transferPrice)} con Transferencia o depósito
+                {formatPrice(cardPrice)} con tarjeta en cuotas
               </span>
             </div>
           </div>

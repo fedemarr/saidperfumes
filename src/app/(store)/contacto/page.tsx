@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { TurnstileWidget } from "@/components/auth/TurnstileWidget";
 
 const contactSchema = z.object({
   name: z.string().min(2, "Nombre requerido"),
@@ -20,7 +19,6 @@ const contactSchema = z.object({
 type ContactInput = z.infer<typeof contactSchema>;
 
 export default function ContactoPage() {
-  const [turnstileToken, setTurnstileToken] = useState("");
   const [sent, setSent] = useState(false);
   const [serverError, setServerError] = useState("");
 
@@ -29,7 +27,6 @@ export default function ContactoPage() {
   });
 
   async function onSubmit(_data: ContactInput) {
-    if (!turnstileToken) { setServerError("Completá la verificación"); return; }
     setServerError("");
     await new Promise((r) => setTimeout(r, 800));
     setSent(true);
@@ -52,9 +49,9 @@ export default function ContactoPage() {
             <MessageCircle className="h-5 w-5 text-gold flex-shrink-0" />
             <div>
               <p className="text-xs uppercase tracking-widest text-muted-foreground mb-0.5">WhatsApp</p>
-              <a href="https://wa.me/5491162337973" target="_blank" rel="noopener noreferrer"
+              <a href="https://wa.me/5491137868379" target="_blank" rel="noopener noreferrer"
                 className="text-white hover:text-gold transition-colors">
-                +54 9 11 6233 7973
+                +54 9 11 3786-8379
               </a>
             </div>
           </div>
@@ -62,8 +59,8 @@ export default function ContactoPage() {
             <Phone className="h-5 w-5 text-gold flex-shrink-0" />
             <div>
               <p className="text-xs uppercase tracking-widest text-muted-foreground mb-0.5">Teléfono</p>
-              <a href="tel:+541162337973" className="text-white hover:text-gold transition-colors">
-                11 6233 7973
+              <a href="tel:+5491137868379" className="text-white hover:text-gold transition-colors">
+                11 3786-8379
               </a>
             </div>
           </div>
@@ -107,14 +104,9 @@ export default function ContactoPage() {
               {errors.message && <p className="text-xs text-destructive mt-1">{errors.message.message}</p>}
             </div>
 
-            <TurnstileWidget
-              onVerify={setTurnstileToken}
-              onExpire={() => setTurnstileToken("")}
-            />
-
             {serverError && <p className="text-sm text-destructive">{serverError}</p>}
 
-            <Button type="submit" disabled={isSubmitting || !turnstileToken}>
+            <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? "Enviando..." : "Enviar"}
             </Button>
           </form>

@@ -75,29 +75,31 @@ export async function POST(req: NextRequest) {
       include: { items: { include: { product: true } } },
     });
 
-    // Send confirmation to guest or session user
-    sendOrderConfirmationEmail(guestEmail, guestName, {
-      orderNumber: order.orderNumber,
-      items: order.items.map((i) => ({
-        name: i.product.name,
-        brand: i.product.brand,
-        quantity: i.quantity,
-        unitPrice: Number(i.unitPrice),
-      })),
-      total: Number(order.total),
-      discount: Number(order.discount),
-      shippingCost: Number(order.shippingCost),
-      paymentMethod: order.paymentMethod,
-      shippingAddress: order.shippingAddress as { street: string; city: string; province: string; zip: string },
-    }).then(() => console.log(`[email] confirmation sent to ${guestEmail}`))
-      .catch((err) => console.error("[email] confirmation failed:", err));
+    // Await emails before returning so Vercel doesn't kill them on serverless function exit
+    await Promise.allSettled([
+      sendOrderConfirmationEmail(guestEmail, guestName, {
+        orderNumber: order.orderNumber,
+        items: order.items.map((i) => ({
+          name: i.product.name,
+          brand: i.product.brand,
+          quantity: i.quantity,
+          unitPrice: Number(i.unitPrice),
+        })),
+        total: Number(order.total),
+        discount: Number(order.discount),
+        shippingCost: Number(order.shippingCost),
+        paymentMethod: order.paymentMethod,
+        shippingAddress: order.shippingAddress as { street: string; city: string; province: string; zip: string },
+      }).then(() => console.log(`[email] confirmation sent to ${guestEmail}`))
+        .catch((err) => console.error("[email] confirmation failed:", err)),
 
-    sendNewOrderAdminEmail({
-      orderNumber: order.orderNumber,
-      total: Number(order.total),
-      paymentMethod: order.paymentMethod,
-      user: { name: guestName, email: guestEmail },
-    }).catch(console.error);
+      sendNewOrderAdminEmail({
+        orderNumber: order.orderNumber,
+        total: Number(order.total),
+        paymentMethod: order.paymentMethod,
+        user: { name: guestName, email: guestEmail },
+      }).catch((err) => console.error("[email] admin notification failed:", err)),
+    ]);
 
     return NextResponse.json({ orderId: order.id, orderNumber: order.orderNumber }, { status: 201 });
   } catch (err) {
