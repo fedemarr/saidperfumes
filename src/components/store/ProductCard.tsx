@@ -44,7 +44,7 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="relative bg-card border border-border overflow-hidden">
           {/* Badges */}
           <div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
-            {discountPct > 0 && <Badge>{discountPct}% OFF</Badge>}
+            <Badge>20% OFF</Badge>
             {product.freeShipping && <Badge variant="outline">Envío gratis</Badge>}
           </div>
 
@@ -72,11 +72,11 @@ export function ProductCard({ product }: ProductCardProps) {
             <p className="text-sm text-white font-medium line-clamp-2 leading-snug">{product.name}</p>
             <div className="mt-2 flex flex-col gap-0.5">
               <span className="text-base font-semibold text-white">
-                {formatPrice(transferPrice)}
+                {formatPrice(cardPrice)}
               </span>
-              <span className="text-[10px] text-gold">Transferencia / efectivo</span>
-              <span className="text-[10px] text-muted-foreground">
-                {formatPrice(cardPrice)} con tarjeta en cuotas
+              <span className="text-[10px] text-muted-foreground">hasta 12 cuotas con tarjeta</span>
+              <span className="text-[10px] text-gold font-semibold">
+                {formatPrice(transferPrice)} — 20% OFF efectivo/transferencia
               </span>
             </div>
           </div>

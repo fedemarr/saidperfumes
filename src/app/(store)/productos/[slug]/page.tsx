@@ -140,16 +140,17 @@ export default function ProductDetailPage() {
           <div className="flex flex-wrap gap-2">
             <Badge variant="secondary">{genderLabel}</Badge>
             {product.freeShipping && <Badge variant="outline">Envío gratis</Badge>}
-            {discountPct > 0 && <Badge>{discountPct}% OFF con transferencia</Badge>}
+            <Badge>20% OFF efectivo/transferencia</Badge>
           </div>
 
           <div className="space-y-1">
-            <p className="text-3xl font-bold text-white">{formatPrice(transferPrice)}</p>
-            <p className="text-sm text-gold">Precio transferencia / efectivo</p>
-            <p className="text-sm text-muted-foreground">{formatPrice(cardPrice)} con tarjeta en cuotas</p>
-            {discountPct > 0 && (
-              <p className="text-xs text-muted-foreground">Ahorrás {discountPct}% pagando con transferencia</p>
-            )}
+            <p className="text-3xl font-bold text-white">{formatPrice(cardPrice)}</p>
+            <p className="text-sm text-muted-foreground">Hasta 12 cuotas con tarjeta</p>
+            <div className="flex items-center gap-2 mt-1">
+              <p className="text-xl font-semibold text-gold">{formatPrice(transferPrice)}</p>
+              <span className="text-xs bg-gold text-black font-bold px-2 py-0.5">20% OFF</span>
+            </div>
+            <p className="text-sm text-gold">Con efectivo o transferencia</p>
           </div>
 
           {product.freeShipping && (
