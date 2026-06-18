@@ -35,7 +35,9 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    await sendVerificationEmail(user.email, user.name ?? "", token);
+    sendVerificationEmail(user.email, user.name ?? "", token).catch((err) =>
+      console.error("[register] email verification send failed:", err)
+    );
 
     return NextResponse.json({ message: "Cuenta creada. Revisá tu email para verificar." }, { status: 201 });
   } catch (err) {
