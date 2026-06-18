@@ -83,7 +83,6 @@ export default function ProductDetailPage() {
 
   const transferPrice = product.priceTransfer ?? product.price;
   const cardPrice = getCardPrice(product.price);
-  const discountPct = transferPrice < cardPrice ? Math.round((1 - transferPrice / cardPrice) * 100) : 0;
   const genderLabel = product.gender === "MASCULINO" ? "Para él" : product.gender === "FEMENINO" ? "Para ella" : "Unisex";
 
   return (

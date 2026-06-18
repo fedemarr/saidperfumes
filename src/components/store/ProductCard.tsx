@@ -17,7 +17,6 @@ export function ProductCard({ product }: ProductCardProps) {
   const { addItem } = useCartStore();
   const transferPrice = product.priceTransfer ?? product.price;
   const cardPrice = getCardPrice(product.price);
-  const discountPct = transferPrice < cardPrice ? Math.round((1 - transferPrice / cardPrice) * 100) : 0;
 
   function handleAddToCart(e: React.MouseEvent) {
     e.preventDefault();
