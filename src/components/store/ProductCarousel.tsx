@@ -27,18 +27,18 @@ export function ProductCarousel({ title, products }: ProductCarouselProps) {
         <div className="relative">
           <button
             onClick={() => scroll("left")}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-10 h-10 bg-card border border-border flex items-center justify-center hover:border-gold transition-colors"
+            className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-10 h-10 bg-card border border-border items-center justify-center hover:border-gold transition-colors"
           >
             <ChevronLeft className="h-5 w-5" />
           </button>
 
           <div
             ref={scrollRef}
-            className="flex gap-4 overflow-x-auto scrollbar-hide pb-2"
+            className="flex gap-3 md:gap-4 overflow-x-auto scrollbar-hide pb-2 -mx-4 px-4 md:mx-0 md:px-0"
             style={{ scrollSnapType: "x mandatory" }}
           >
             {products.map((p) => (
-              <div key={p.id} className="flex-none w-56 md:w-64" style={{ scrollSnapAlign: "start" }}>
+              <div key={p.id} className="flex-none w-40 sm:w-48 md:w-64" style={{ scrollSnapAlign: "start" }}>
                 <ProductCard product={p} />
               </div>
             ))}
@@ -46,7 +46,7 @@ export function ProductCarousel({ title, products }: ProductCarouselProps) {
 
           <button
             onClick={() => scroll("right")}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-10 h-10 bg-card border border-border flex items-center justify-center hover:border-gold transition-colors"
+            className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-10 h-10 bg-card border border-border items-center justify-center hover:border-gold transition-colors"
           >
             <ChevronRight className="h-5 w-5" />
           </button>

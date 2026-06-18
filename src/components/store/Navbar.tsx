@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-
 import { useRouter } from "next/navigation";
 import { Search, User, ShoppingBag, X, Menu } from "lucide-react";
 import { useCartStore } from "@/stores/cartStore";
@@ -13,6 +12,7 @@ import { cn } from "@/lib/utils";
 export function Navbar() {
   const [search, setSearch] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { totalItems, openCart } = useCartStore();
@@ -30,6 +30,8 @@ export function Navbar() {
     if (search.trim()) {
       router.push(`/productos?search=${encodeURIComponent(search.trim())}`);
       setSearch("");
+      setSearchOpen(false);
+      setMobileOpen(false);
     }
   }
 
@@ -44,10 +46,11 @@ export function Navbar() {
       <header className={cn("sticky top-0 z-30 bg-black transition-shadow", scrolled && "shadow-lg shadow-black/50")}>
         {/* Top bar */}
         <div className="border-b border-border">
-          <div className="max-w-7xl mx-auto px-4 h-16 flex items-center gap-4">
-            {/* Search */}
-            <form onSubmit={handleSearch} className="flex-1 max-w-xs">
-              <div className="flex items-center border border-border h-9 px-3 gap-2 focus-within:border-gold transition-colors">
+          <div className="max-w-7xl mx-auto px-4 h-14 md:h-16 flex items-center gap-3">
+
+            {/* Desktop search */}
+            <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-xs">
+              <div className="flex items-center border border-border h-9 px-3 gap-2 w-full focus-within:border-gold transition-colors">
                 <input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -60,8 +63,13 @@ export function Navbar() {
               </div>
             </form>
 
-            {/* Logo */}
-            <div className="flex-1 flex justify-center pl-16">
+            {/* Mobile: hamburger on the left */}
+            <button onClick={() => { setMobileOpen(!mobileOpen); setSearchOpen(false); }} className="md:hidden text-white p-1">
+              {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+
+            {/* Logo — centered */}
+            <div className="flex-1 flex justify-center">
               <Link href="/" className="flex flex-col items-center">
                 <span className="font-serif text-2xl font-bold tracking-[0.3em] text-white uppercase">SAID</span>
                 <span className="text-[9px] tracking-[0.5em] text-gold uppercase">Perfumes</span>
@@ -69,12 +77,14 @@ export function Navbar() {
             </div>
 
             {/* Right icons */}
-            <div className="flex-1 flex justify-end items-center gap-3">
+            <div className="flex items-center gap-2 md:gap-3 md:flex-1 md:justify-end">
+              {/* Mobile search icon */}
+              <button onClick={() => { setSearchOpen(!searchOpen); setMobileOpen(false); }} className="md:hidden text-white hover:text-gold transition-colors p-1">
+                <Search className="h-5 w-5" />
+              </button>
+
               <div className="relative">
-                <button
-                  onClick={() => setUserOpen(!userOpen)}
-                  className="text-white hover:text-gold transition-colors p-1"
-                >
+                <button onClick={() => setUserOpen(!userOpen)} className="text-white hover:text-gold transition-colors p-1">
                   <User className="h-5 w-5" />
                 </button>
                 {userOpen && (
@@ -118,24 +128,35 @@ export function Navbar() {
                   </span>
                 )}
               </button>
-
-              <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden text-white p-1">
-                {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-              </button>
             </div>
           </div>
         </div>
 
-        {/* Nav links */}
+        {/* Mobile search bar */}
+        {searchOpen && (
+          <div className="md:hidden border-b border-border bg-card px-4 py-3">
+            <form onSubmit={handleSearch} className="flex items-center border border-border h-10 px-3 gap-2 focus-within:border-gold transition-colors">
+              <input
+                autoFocus
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Buscar perfumes..."
+                className="bg-transparent text-sm text-white placeholder:text-muted-foreground flex-1 outline-none"
+              />
+              <button type="submit" className="text-muted-foreground hover:text-white transition-colors">
+                <Search className="h-4 w-4" />
+              </button>
+            </form>
+          </div>
+        )}
+
+        {/* Desktop nav links */}
         <nav className="hidden md:block border-b border-border">
           <div className="max-w-7xl mx-auto px-4">
             <ul className="flex justify-center gap-8 h-11 items-center">
               {navLinks.map((l) => (
                 <li key={l.href}>
-                  <Link
-                    href={l.href}
-                    className="text-sm text-white/80 hover:text-white tracking-widest uppercase transition-colors"
-                  >
+                  <Link href={l.href} className="text-sm text-white/80 hover:text-white tracking-widest uppercase transition-colors">
                     {l.label}
                   </Link>
                 </li>
@@ -159,6 +180,20 @@ export function Navbar() {
                   </Link>
                 </li>
               ))}
+              {session ? (
+                <>
+                  <li><Link href="/mi-cuenta" onClick={() => setMobileOpen(false)} className="block py-3 text-sm text-muted-foreground border-b border-border">Mi cuenta</Link></li>
+                  <li><Link href="/mis-pedidos" onClick={() => setMobileOpen(false)} className="block py-3 text-sm text-muted-foreground border-b border-border">Mis pedidos</Link></li>
+                  {session.user.role === "ADMIN" && (
+                    <li><Link href="/admin" onClick={() => setMobileOpen(false)} className="block py-3 text-sm text-gold">Panel Admin</Link></li>
+                  )}
+                </>
+              ) : (
+                <>
+                  <li><Link href="/login" onClick={() => setMobileOpen(false)} className="block py-3 text-sm text-muted-foreground border-b border-border">Iniciar sesión</Link></li>
+                  <li><Link href="/register" onClick={() => setMobileOpen(false)} className="block py-3 text-sm text-muted-foreground">Crear cuenta</Link></li>
+                </>
+              )}
             </ul>
           </nav>
         )}
@@ -166,9 +201,8 @@ export function Navbar() {
 
       <CartSidebar />
 
-      {/* Overlay for user dropdown */}
-      {userOpen && (
-        <div className="fixed inset-0 z-20" onClick={() => setUserOpen(false)} />
+      {(userOpen || mobileOpen) && (
+        <div className="fixed inset-0 z-20" onClick={() => { setUserOpen(false); }} />
       )}
     </>
   );

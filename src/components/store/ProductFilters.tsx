@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { SlidersHorizontal, X } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
@@ -14,43 +15,25 @@ const GENDERS = [
   { value: "UNISEX", label: "Unisex" },
 ];
 
-export function ProductFilters() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 500000]);
-
-  const getParam = (key: string) => searchParams.getAll(key);
-
-  function toggle(key: string, value: string) {
-    const params = new URLSearchParams(searchParams.toString());
-    const existing = params.getAll(key);
-    if (existing.includes(value)) {
-      params.delete(key);
-      existing.filter((v) => v !== value).forEach((v) => params.append(key, v));
-    } else {
-      params.append(key, value);
-    }
-    params.set("page", "1");
-    router.push(`/productos?${params.toString()}`);
-  }
-
-  function applyPrice() {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("priceMin", String(priceRange[0]));
-    params.set("priceMax", String(priceRange[1]));
-    params.set("page", "1");
-    router.push(`/productos?${params.toString()}`);
-  }
-
-  function clearAll() {
-    router.push("/productos");
-  }
-
-  const hasFilters = searchParams.toString().length > 0;
-
+function FilterContent({
+  getParam,
+  toggle,
+  priceRange,
+  setPriceRange,
+  applyPrice,
+  clearAll,
+  hasFilters,
+}: {
+  getParam: (k: string) => string[];
+  toggle: (k: string, v: string) => void;
+  priceRange: [number, number];
+  setPriceRange: (v: [number, number]) => void;
+  applyPrice: () => void;
+  clearAll: () => void;
+  hasFilters: boolean;
+}) {
   return (
-    <aside className="w-full md:w-56 shrink-0 space-y-8">
+    <div className="space-y-7">
       {hasFilters && (
         <button onClick={clearAll} className="text-xs text-gold hover:underline">
           Limpiar filtros
@@ -79,7 +62,7 @@ export function ProductFilters() {
         <div key={value}>
           <button
             onClick={() => toggle("category", value)}
-            className={`w-full flex items-center justify-between mb-2 group ${getParam("category").includes(value) ? "text-gold" : "text-white"}`}
+            className={`w-full flex items-center justify-between mb-2 ${getParam("category").includes(value) ? "text-gold" : "text-white"}`}
           >
             <h3 className="text-xs font-semibold tracking-widest uppercase">{label}</h3>
             <Checkbox
@@ -123,6 +106,95 @@ export function ProductFilters() {
           Aplicar
         </Button>
       </div>
-    </aside>
+    </div>
+  );
+}
+
+export function ProductFilters() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 500000]);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const getParam = (key: string) => searchParams.getAll(key);
+
+  function toggle(key: string, value: string) {
+    const params = new URLSearchParams(searchParams.toString());
+    const existing = params.getAll(key);
+    if (existing.includes(value)) {
+      params.delete(key);
+      existing.filter((v) => v !== value).forEach((v) => params.append(key, v));
+    } else {
+      params.append(key, value);
+    }
+    params.set("page", "1");
+    router.push(`/productos?${params.toString()}`);
+  }
+
+  function applyPrice() {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("priceMin", String(priceRange[0]));
+    params.set("priceMax", String(priceRange[1]));
+    params.set("page", "1");
+    router.push(`/productos?${params.toString()}`);
+    setDrawerOpen(false);
+  }
+
+  function clearAll() {
+    router.push("/productos");
+    setDrawerOpen(false);
+  }
+
+  const hasFilters = searchParams.toString().length > 0;
+  const activeCount = getParam("gender").length + getParam("brand").length + getParam("category").length;
+
+  const props = { getParam, toggle, priceRange, setPriceRange, applyPrice, clearAll, hasFilters };
+
+  return (
+    <>
+      {/* Mobile filter button */}
+      <div className="md:hidden mb-4">
+        <button
+          onClick={() => setDrawerOpen(true)}
+          className="flex items-center gap-2 border border-border px-4 py-2 text-sm text-white hover:border-gold transition-colors"
+        >
+          <SlidersHorizontal className="h-4 w-4" />
+          Filtros
+          {activeCount > 0 && (
+            <span className="ml-1 w-5 h-5 rounded-full bg-gold text-black text-[10px] font-bold flex items-center justify-center">
+              {activeCount}
+            </span>
+          )}
+        </button>
+      </div>
+
+      {/* Mobile drawer */}
+      {drawerOpen && (
+        <>
+          <div className="fixed inset-0 bg-black/70 z-40 md:hidden" onClick={() => setDrawerOpen(false)} />
+          <div className="fixed inset-y-0 left-0 w-80 max-w-[85vw] bg-card border-r border-border z-50 md:hidden flex flex-col">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-border">
+              <h2 className="text-sm font-semibold tracking-widest uppercase">Filtros</h2>
+              <button onClick={() => setDrawerOpen(false)} className="text-muted-foreground hover:text-white">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto px-5 py-6">
+              <FilterContent {...props} />
+            </div>
+            <div className="px-5 py-4 border-t border-border">
+              <Button className="w-full" onClick={() => setDrawerOpen(false)}>
+                Ver resultados
+              </Button>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Desktop sidebar */}
+      <aside className="hidden md:block w-56 shrink-0">
+        <FilterContent {...props} />
+      </aside>
+    </>
   );
 }

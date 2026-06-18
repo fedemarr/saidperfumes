@@ -59,7 +59,7 @@ export function ProductCard({ product }: ProductCardProps) {
             />
             <button
               onClick={handleAddToCart}
-              className="absolute bottom-0 left-0 right-0 flex items-center justify-center gap-2 bg-gold text-black text-xs font-bold tracking-widest uppercase py-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300"
+              className="absolute bottom-0 left-0 right-0 flex items-center justify-center gap-2 bg-gold text-black text-xs font-bold tracking-widest uppercase py-3 translate-y-0 md:translate-y-full md:group-hover:translate-y-0 transition-transform duration-300"
             >
               <ShoppingBag className="h-4 w-4" />
               Agregar

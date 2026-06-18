@@ -28,7 +28,7 @@ export function HeroBanner() {
 
   return (
     <div>
-      <div className="relative w-full overflow-hidden bg-black" style={{ aspectRatio: "1440/600" }}>
+      <div className="relative w-full overflow-hidden bg-black aspect-[4/3] sm:aspect-[16/7] md:aspect-[1440/600]">
         <Link href="/productos" className="absolute inset-0 z-10">
           <AnimatePresence mode="wait">
             <motion.div

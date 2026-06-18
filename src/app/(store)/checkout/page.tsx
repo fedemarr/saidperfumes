@@ -104,7 +104,7 @@ export default function CheckoutPage() {
         ))}
       </div>
 
-      <div className="grid md:grid-cols-3 gap-8">
+      <div className="grid md:grid-cols-3 gap-6 md:gap-8">
         {/* Left: steps */}
         <div className="md:col-span-2">
           {/* Step 1: Shipping */}
