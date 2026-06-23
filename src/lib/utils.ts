@@ -95,7 +95,7 @@ export const BRANDS_BY_CATEGORY: { label: string; value: string; brands: string[
   {
     label: "Árabe",
     value: "ARABE",
-    brands: ["Lattafa", "Armaf", "Afnan", "Rasasi", "French Avenue", "Al Haramain", "Bharara", "Zimaya"],
+    brands: ["Lattafa", "Armaf", "Afnan", "Rasasi", "French Avenue", "Al Haramain", "Bharara"],
   },
   {
     label: "Diseñador",
