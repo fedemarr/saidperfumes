@@ -21,8 +21,8 @@ export async function GET(req: NextRequest) {
   const limit = 20;
 
   const where = search
-    ? { OR: [{ name: { contains: search, mode: "insensitive" as const } }, { brand: { contains: search, mode: "insensitive" as const } }] }
-    : {};
+    ? { deletedAt: null, OR: [{ name: { contains: search, mode: "insensitive" as const } }, { brand: { contains: search, mode: "insensitive" as const } }] }
+    : { deletedAt: null };
 
   const [products, total] = await Promise.all([
     prisma.product.findMany({

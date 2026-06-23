@@ -31,6 +31,6 @@ export async function DELETE(_req: NextRequest, { params }: { params: { id: stri
   const { error } = await requireAdmin();
   if (error) return error;
 
-  await prisma.product.update({ where: { id: params.id }, data: { isActive: false } });
+  await prisma.product.update({ where: { id: params.id }, data: { deletedAt: new Date(), isActive: false } });
   return NextResponse.json({ success: true });
 }

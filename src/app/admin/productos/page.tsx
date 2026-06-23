@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Plus, Search, Edit2 } from "lucide-react";
+import { Plus, Search, Edit2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -37,6 +37,12 @@ export default function AdminProductosPage() {
       body: JSON.stringify({ [field]: value }),
     });
     setProducts((prev) => prev.map((p) => p.id === id ? { ...p, [field]: value } : p));
+  }
+
+  async function deleteProduct(id: string, name: string) {
+    if (!confirm(`¿Eliminar "${name}"? Esta acción no se puede deshacer.`)) return;
+    await fetch(`/api/admin/products/${id}`, { method: "DELETE" });
+    setProducts((prev) => prev.filter((p) => p.id !== id));
   }
 
   return (
@@ -98,9 +104,18 @@ export default function AdminProductosPage() {
                       <Switch checked={p.isFeatured} onCheckedChange={(v) => toggleField(p.id, "isFeatured", v)} />
                     </td>
                     <td className="p-3">
-                      <Button asChild size="icon" variant="ghost">
-                        <Link href={`/admin/productos/${p.id}`}><Edit2 className="h-4 w-4" /></Link>
-                      </Button>
+                      <div className="flex items-center gap-1">
+                        <Button asChild size="icon" variant="ghost">
+                          <Link href={`/admin/productos/${p.id}`}><Edit2 className="h-4 w-4" /></Link>
+                        </Button>
+                        <button
+                          onClick={() => deleteProduct(p.id, p.name)}
+                          className="p-2 text-muted-foreground hover:text-destructive transition-colors"
+                          title="Eliminar"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
