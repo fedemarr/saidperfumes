@@ -189,8 +189,8 @@ export default function CheckoutPage() {
                     <span className="font-semibold text-white">Tarjeta de crédito</span>
                     {paymentMethod === "TARJETA" && <Check className="h-4 w-4 text-gold" />}
                   </div>
-                  <span className="text-xs text-gold font-bold">Hasta 12 cuotas</span>
-                  <p className="text-xs text-muted-foreground mt-1">+15% recargo · Visa, Mastercard y más</p>
+                  <span className="text-xs text-gold font-bold">3 cuotas sin interés</span>
+                  <p className="text-xs text-muted-foreground mt-1">Visa, Mastercard y más</p>
                 </button>
               </div>
 
@@ -208,8 +208,7 @@ export default function CheckoutPage() {
               {paymentMethod === "TARJETA" && (
                 <div className="bg-card border border-gold/30 p-5">
                   <p className="text-sm font-semibold text-gold mb-2">Pago con MercadoPago</p>
-                  <p className="text-sm text-muted-foreground">Al confirmar serás redirigido a MercadoPago para completar el pago con tu tarjeta en hasta 12 cuotas.</p>
-                  <p className="text-xs text-muted-foreground mt-1">El precio incluye un recargo del 15% por pago con tarjeta.</p>
+                  <p className="text-sm text-muted-foreground">Al confirmar serás redirigido a MercadoPago para completar el pago con tu tarjeta en 3 cuotas sin interés.</p>
                   <p className="text-sm text-gold font-semibold mt-2">Total: {formatPrice(total)}</p>
                 </div>
               )}

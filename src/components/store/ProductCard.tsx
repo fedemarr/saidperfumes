@@ -70,12 +70,13 @@ export function ProductCard({ product }: ProductCardProps) {
             <p className="text-[10px] text-gold uppercase tracking-wider mb-0.5">{product.brand}</p>
             <p className="text-sm text-white font-medium line-clamp-2 leading-snug">{product.name}</p>
             <div className="mt-2 flex flex-col gap-0.5">
-              <span className="text-base font-semibold text-white">
-                {formatPrice(cardPrice)}
-              </span>
-              <span className="text-[10px] text-muted-foreground">hasta 12 cuotas con tarjeta</span>
-              <span className="text-[10px] text-gold font-semibold">
-                {formatPrice(transferPrice)} — 20% OFF efectivo/transferencia
+              <div className="flex items-center gap-1.5">
+                <span className="text-base font-semibold text-gold">{formatPrice(transferPrice)}</span>
+                <span className="text-[9px] bg-gold text-black font-bold px-1.5 py-0.5">20% OFF</span>
+              </div>
+              <span className="text-[10px] text-muted-foreground">efectivo / transferencia</span>
+              <span className="text-[10px] text-muted-foreground">
+                {formatPrice(cardPrice)} — 3 cuotas sin interés
               </span>
             </div>
           </div>

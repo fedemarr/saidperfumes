@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { LayoutDashboard, ShoppingBag, CreditCard, Package, Users, LogOut } from "lucide-react";
+import { LayoutDashboard, ShoppingBag, CreditCard, Package, Users, LogOut, Tag } from "lucide-react";
 
 const NAV = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/pedidos", label: "Pedidos", icon: ShoppingBag },
   { href: "/admin/pagos", label: "Pagos", icon: CreditCard },
   { href: "/admin/productos", label: "Productos", icon: Package },
+  { href: "/admin/marcas", label: "Marcas", icon: Tag },
   { href: "/admin/usuarios", label: "Usuarios", icon: Users },
 ];
 

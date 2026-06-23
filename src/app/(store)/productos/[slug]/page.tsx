@@ -143,13 +143,13 @@ export default function ProductDetailPage() {
           </div>
 
           <div className="space-y-1">
-            <p className="text-3xl font-bold text-white">{formatPrice(cardPrice)}</p>
-            <p className="text-sm text-muted-foreground">Hasta 12 cuotas con tarjeta</p>
-            <div className="flex items-center gap-2 mt-1">
-              <p className="text-xl font-semibold text-gold">{formatPrice(transferPrice)}</p>
+            <div className="flex items-center gap-2">
+              <p className="text-3xl font-bold text-gold">{formatPrice(transferPrice)}</p>
               <span className="text-xs bg-gold text-black font-bold px-2 py-0.5">20% OFF</span>
             </div>
-            <p className="text-sm text-gold">Con efectivo o transferencia</p>
+            <p className="text-sm text-muted-foreground">Con efectivo o transferencia</p>
+            <p className="text-lg font-semibold text-white mt-2">{formatPrice(cardPrice)}</p>
+            <p className="text-sm text-muted-foreground">3 cuotas sin interés con tarjeta</p>
           </div>
 
           {product.freeShipping && (

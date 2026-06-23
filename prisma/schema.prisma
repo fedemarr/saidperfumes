@@ -175,3 +175,10 @@ model OrderItem {
   order     Order   @relation(fields: [orderId], references: [id])
   product   Product @relation(fields: [productId], references: [id])
 }
+
+model Brand {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  category  Category @default(ARABE)
+  createdAt DateTime @default(now())
+}

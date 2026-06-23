@@ -95,22 +95,17 @@ export const BRANDS_BY_CATEGORY: { label: string; value: string; brands: string[
   {
     label: "Árabe",
     value: "ARABE",
-    brands: ["Lattafa", "Armaf", "Afnan", "Rasasi", "French Avenue", "Al Haramain", "Bharara", "Ajmal", "Amouage", "Arabian Oud", "Swiss Arabian", "Zimaya"],
+    brands: ["Lattafa", "Armaf", "Afnan", "Rasasi", "French Avenue", "Al Haramain", "Bharara", "Zimaya"],
   },
   {
     label: "Diseñador",
     value: "DESIGNER",
-    brands: ["Valentino", "Jean Paul Gaultier", "Giorgio"],
+    brands: ["Valentino"],
   },
   {
     label: "Nicho",
     value: "NICHE",
     brands: ["Xerjoff"],
-  },
-  {
-    label: "Nacional",
-    value: "NATIONAL",
-    brands: ["Dherrera"],
   },
 ];
 

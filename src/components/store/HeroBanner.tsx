@@ -13,7 +13,7 @@ const SLIDES = [
 
 const BADGES = [
   { icon: Percent, text: "20% OFF", sub: "por transferencia" },
-  { icon: CreditCard, text: "Hasta 6 cuotas", sub: "sin interés" },
+  { icon: CreditCard, text: "3 cuotas", sub: "sin interés" },
   { icon: Truck, text: "Envío gratis", sub: "superando $150.000" },
   { icon: Package, text: "Más de 250", sub: "perfumes en stock" },
 ];
@@ -28,7 +28,7 @@ export function HeroBanner() {
 
   return (
     <div>
-      <div className="relative w-full overflow-hidden bg-black aspect-[4/3] sm:aspect-[16/7] md:aspect-[1440/600]">
+      <div className="relative w-full overflow-hidden bg-black aspect-[12/5] md:aspect-[1440/600]">
         <Link href="/productos" className="absolute inset-0 z-10">
           <AnimatePresence mode="wait">
             <motion.div
@@ -43,7 +43,7 @@ export function HeroBanner() {
                 src={SLIDES[current].bg}
                 alt={`Banner ${current + 1}`}
                 fill
-                className="object-cover object-center"
+                className="object-contain md:object-cover md:object-center"
                 priority={current === 0}
               />
             </motion.div>

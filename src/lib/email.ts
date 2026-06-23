@@ -8,6 +8,7 @@ function getResend(): Resend {
 
 const FROM = process.env.EMAIL_FROM ?? "SAID Perfumes <noreply@saidperfumes.com>";
 const ADMIN = process.env.EMAIL_ADMIN ?? "admin@saidperfumes.com";
+const ADMIN_CC = "saidperfumes1@gmail.com";
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
 function baseTemplate(content: string): string {
@@ -157,7 +158,7 @@ export async function sendNewOrderAdminEmail(
 ) {
   await getResend().emails.send({
     from: FROM,
-    to: ADMIN,
+    to: [ADMIN, ADMIN_CC],
     subject: `Nueva orden #${order.orderNumber} — $${order.total.toLocaleString("es-AR")}`,
     html: baseTemplate(`
       <h2 style="color:#C9A84C;font-size:22px;margin:0 0 16px;">Nueva venta!</h2>

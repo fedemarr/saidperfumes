@@ -1,13 +1,13 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Upload, X } from "lucide-react";
 import { productSchema, type ProductInput } from "@/lib/validations/product";
-import { slugify, BRANDS, OCCASIONS } from "@/lib/utils";
+import { slugify, OCCASIONS } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -52,8 +52,16 @@ export function ProductForm({ product }: ProductFormProps) {
   const router = useRouter();
   const [serverError, setServerError] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [brandOptions, setBrandOptions] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const isEdit = !!product;
+
+  useEffect(() => {
+    fetch("/api/admin/brands")
+      .then((r) => r.json())
+      .then((d) => setBrandOptions((d.brands ?? []).map((b: { name: string }) => b.name)))
+      .catch(() => {});
+  }, []);
 
   const { register, handleSubmit, control, setValue, formState: { errors, isSubmitting } } = useForm<ProductInput>({
     resolver: zodResolver(productSchema),
@@ -137,12 +145,17 @@ export function ProductForm({ product }: ProductFormProps) {
       <div className="grid md:grid-cols-3 gap-4">
         <div>
           <Label>Marca</Label>
-          <Controller name="brand" control={control} render={({ field }) => (
-            <Select value={field.value} onValueChange={field.onChange}>
-              <SelectTrigger className="mt-1"><SelectValue placeholder="Seleccionar" /></SelectTrigger>
-              <SelectContent>{BRANDS.map((b) => <SelectItem key={b} value={b}>{b}</SelectItem>)}</SelectContent>
-            </Select>
-          )} />
+          <div className="mt-1">
+            <input
+              list="brand-options"
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              placeholder="Seleccionar o escribir marca"
+              {...register("brand")}
+            />
+            <datalist id="brand-options">
+              {brandOptions.map((b) => <option key={b} value={b} />)}
+            </datalist>
+          </div>
         </div>
         <div>
           <Label>Categoría</Label>
