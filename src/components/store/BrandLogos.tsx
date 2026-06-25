@@ -27,7 +27,7 @@ export function BrandLogos() {
             <Link
               key={name}
               href={`/productos?brand=${encodeURIComponent(brand)}`}
-              className="group flex items-center justify-center bg-white rounded-sm p-3 aspect-video hover:ring-2 hover:ring-gold transition-all duration-300"
+              className="group flex items-center justify-center bg-black rounded-sm p-3 aspect-video hover:ring-2 hover:ring-gold transition-all duration-300"
             >
               <div className="relative w-full h-full">
                 <Image
