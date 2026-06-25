@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { checkoutSchema } from "@/lib/validations/order";
 import { generateOrderNumber, hasFreeShipping } from "@/lib/utils";
 import { sendOrderConfirmationEmail, sendNewOrderAdminEmail } from "@/lib/email";
+import { createPaymentPreference } from "@/lib/mercadopago";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { z } from "zod";
 
@@ -75,8 +76,8 @@ export async function POST(req: NextRequest) {
       include: { items: { include: { product: true } } },
     });
 
-    // Await emails before returning so Vercel doesn't kill them on serverless function exit
-    await Promise.allSettled([
+    // Send emails (non-blocking for TARJETA since user gets redirected to MP)
+    Promise.allSettled([
       sendOrderConfirmationEmail(guestEmail, guestName, {
         orderNumber: order.orderNumber,
         items: order.items.map((i) => ({
@@ -90,8 +91,7 @@ export async function POST(req: NextRequest) {
         shippingCost: Number(order.shippingCost),
         paymentMethod: order.paymentMethod,
         shippingAddress: order.shippingAddress as { street: string; city: string; province: string; zip: string },
-      }).then(() => console.log(`[email] confirmation sent to ${guestEmail}`))
-        .catch((err) => console.error("[email] confirmation failed:", err)),
+      }).catch((err) => console.error("[email] confirmation failed:", err)),
 
       sendNewOrderAdminEmail({
         orderNumber: order.orderNumber,
@@ -100,6 +100,36 @@ export async function POST(req: NextRequest) {
         user: { name: guestName, email: guestEmail },
       }).catch((err) => console.error("[email] admin notification failed:", err)),
     ]);
+
+    // For card payments: create MercadoPago preference and return payment URL
+    if (data.paymentMethod === "TARJETA") {
+      try {
+        const preference = await createPaymentPreference({
+          id: order.id,
+          orderNumber: order.orderNumber,
+          total: Number(order.total),
+          items: order.items.map((i) => ({
+            name: i.product.name,
+            brand: i.product.brand,
+            quantity: i.quantity,
+            unitPrice: Number(i.unitPrice),
+          })),
+        });
+        return NextResponse.json({
+          orderId: order.id,
+          orderNumber: order.orderNumber,
+          paymentUrl: preference.init_point,
+        }, { status: 201 });
+      } catch (err) {
+        console.error("[mp] preference creation failed:", err);
+        // Fallback to static link if preference fails
+        return NextResponse.json({
+          orderId: order.id,
+          orderNumber: order.orderNumber,
+          paymentUrl: "https://link.mercadopago.com.ar/saidperfumes",
+        }, { status: 201 });
+      }
+    }
 
     return NextResponse.json({ orderId: order.id, orderNumber: order.orderNumber }, { status: 201 });
   } catch (err) {

@@ -73,8 +73,8 @@ export default function CheckoutPage() {
       if (!res.ok) { setError(json.error ?? "Error al crear la orden"); return; }
       setOrderNumber(json.orderNumber);
       clearCart();
-      if (paymentMethod === "TARJETA") {
-        window.location.href = "https://link.mercadopago.com.ar/saidperfumes";
+      if (paymentMethod === "TARJETA" && json.paymentUrl) {
+        window.location.href = json.paymentUrl;
       } else {
         setStep(3);
       }
