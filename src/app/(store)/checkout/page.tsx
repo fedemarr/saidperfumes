@@ -46,7 +46,7 @@ export default function CheckoutPage() {
   }
 
   const transferTotal = items.reduce((s, i) => s + (i.priceTransfer ?? i.price) * i.quantity, 0);
-  const cardTotal = items.reduce((s, i) => s + getCardPrice(i.price) * i.quantity, 0);
+  const cardTotal = items.reduce((s, i) => s + getCardPrice(i.priceTransfer ?? i.price) * i.quantity, 0);
   const total = paymentMethod === "TRANSFERENCIA" ? transferTotal : cardTotal;
   const discount = paymentMethod === "TRANSFERENCIA" ? cardTotal - transferTotal : 0;
 
@@ -265,7 +265,7 @@ export default function CheckoutPage() {
                     <p className="text-xs text-muted-foreground">x{item.quantity}</p>
                   </div>
                   <p className="text-xs text-gold flex-shrink-0">
-                    {formatPrice((paymentMethod === "TRANSFERENCIA" ? (item.priceTransfer ?? item.price) : getCardPrice(item.price)) * item.quantity)}
+                    {formatPrice((paymentMethod === "TRANSFERENCIA" ? (item.priceTransfer ?? item.price) : getCardPrice(item.priceTransfer ?? item.price)) * item.quantity)}
                   </p>
                 </div>
               ))}
