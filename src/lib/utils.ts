@@ -100,7 +100,7 @@ export const BRANDS_BY_CATEGORY: { label: string; value: string; brands: string[
   {
     label: "Diseñador",
     value: "DESIGNER",
-    brands: ["Valentino"],
+    brands: ["Valentino", "Azzaro"],
   },
   {
     label: "Nicho",
