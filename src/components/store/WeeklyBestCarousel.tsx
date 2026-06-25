@@ -145,11 +145,11 @@ export function WeeklyBestCarousel({ products }: WeeklyBestCarouselProps) {
                             </span>
                           )}
                         </div>
-                        <span
-                          className="text-[10px] font-semibold"
-                          style={{ color: "#C9A84C", textShadow: "0 0 8px #C9A84Cbb, 0 0 16px #C9A84C55" }}
-                        >
-                          Efectivo / Transferencia
+                        <span className="text-[10px] text-muted-foreground">
+                          <span className="font-bold text-[11px]" style={{ color: "#C9A84C", textShadow: "0 0 7px #C9A84Caa" }}>E</span>
+                          fectivo / trans
+                          <span className="font-bold text-[11px]" style={{ color: "#C9A84C", textShadow: "0 0 7px #C9A84Caa" }}>F</span>
+                          erencia
                         </span>
                         <span className="text-[10px] text-muted-foreground">
                           {formatPrice(cardPrice)} — 3 cuotas sin interés

@@ -13,6 +13,8 @@ interface ProductCardProps {
   product: ProductWithNotes;
 }
 
+const GLOW = { color: "#C9A84C", textShadow: "0 0 7px #C9A84Caa" } as const;
+
 export function ProductCard({ product }: ProductCardProps) {
   const { addItem } = useCartStore();
   const transferPrice = product.priceTransfer ?? product.price;
@@ -82,11 +84,11 @@ export function ProductCard({ product }: ProductCardProps) {
                   </span>
                 )}
               </div>
-              <span
-                className="text-[10px] font-semibold"
-                style={{ color: "#C9A84C", textShadow: "0 0 8px #C9A84Cbb, 0 0 16px #C9A84C55" }}
-              >
-                Efectivo / Transferencia
+              <span className="text-[10px] text-muted-foreground">
+                <span className="font-bold text-[11px]" style={GLOW}>E</span>
+                fectivo / trans
+                <span className="font-bold text-[11px]" style={GLOW}>F</span>
+                erencia
               </span>
               <span className="text-[10px] text-muted-foreground">
                 {formatPrice(cardPrice)} — 3 cuotas sin interés

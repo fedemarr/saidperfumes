@@ -153,11 +153,12 @@ export default function ProductDetailPage() {
                 </span>
               )}
             </div>
-            <p
-              className="text-sm font-semibold"
-              style={{ color: "#C9A84C", textShadow: "0 0 8px #C9A84Cbb, 0 0 16px #C9A84C55" }}
-            >
-              Efectivo / Transferencia
+            <p className="text-sm text-muted-foreground">
+              Con{" "}
+              <span className="font-bold" style={{ color: "#C9A84C", textShadow: "0 0 7px #C9A84Caa" }}>E</span>
+              fectivo / trans
+              <span className="font-bold" style={{ color: "#C9A84C", textShadow: "0 0 7px #C9A84Caa" }}>F</span>
+              erencia
             </p>
             <p className="text-lg font-semibold text-white mt-2">{formatPrice(cardPrice)}</p>
             <p className="text-sm text-muted-foreground">3 cuotas sin interés con tarjeta</p>
