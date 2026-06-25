@@ -12,9 +12,6 @@ export function OlfactivePyramidSection({ products }: { products: ProductWithNot
     (p) => p.notes.top.length + p.notes.heart.length + p.notes.base.length > 0
   );
   const [index, setIndex] = useState(0);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     if (eligible.length <= 1) return;
@@ -24,7 +21,7 @@ export function OlfactivePyramidSection({ products }: { products: ProductWithNot
     return () => clearInterval(timer);
   }, [eligible.length]);
 
-  if (eligible.length === 0 || !mounted) return null;
+  if (eligible.length === 0) return null;
 
   const product = eligible[index];
 
