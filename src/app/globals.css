@@ -54,4 +54,21 @@
   .section-heading {
     @apply text-center text-2xl md:text-3xl font-serif font-bold tracking-[0.3em] uppercase text-white mb-10;
   }
+
+  .et-label {
+    color: #C9A84C;
+    font-weight: 600;
+  }
+
+  .et-letter {
+    color: #C9A84C;
+    font-weight: 800;
+    font-size: 1.15em;
+    animation: et-glow 2s ease-in-out infinite;
+  }
+}
+
+@keyframes et-glow {
+  0%, 100% { text-shadow: 0 0 6px #C9A84Caa, 0 0 12px #C9A84C55; }
+  50%       { text-shadow: 0 0 12px #C9A84Cee, 0 0 24px #C9A84C99, 0 0 36px #C9A84C44; }
 }

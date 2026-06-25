@@ -82,7 +82,11 @@ export default function ProductDetailPage() {
   }
 
   const transferPrice = product.priceTransfer ?? product.price;
-  const cardPrice = getCardPrice(product.price);
+  const cardPrice = getCardPrice(transferPrice);
+  const discountPct =
+    product.priceTransfer && product.priceTransfer < product.price
+      ? Math.round((1 - product.priceTransfer / product.price) * 100)
+      : 0;
   const genderLabel = product.gender === "MASCULINO" ? "Para él" : product.gender === "FEMENINO" ? "Para ella" : "Unisex";
 
   return (
@@ -139,15 +143,22 @@ export default function ProductDetailPage() {
           <div className="flex flex-wrap gap-2">
             <Badge variant="secondary">{genderLabel}</Badge>
             {product.freeShipping && <Badge variant="outline">Envío gratis</Badge>}
-            <Badge>20% OFF efectivo/transferencia</Badge>
+            {discountPct > 0 && <Badge>{discountPct}% OFF efectivo/transferencia</Badge>}
           </div>
 
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <p className="text-3xl font-bold text-gold">{formatPrice(transferPrice)}</p>
-              <span className="text-xs bg-gold text-black font-bold px-2 py-0.5">20% OFF</span>
+              {discountPct > 0 && (
+                <span className="text-xs bg-gold text-black font-bold px-2 py-0.5">{discountPct}% OFF</span>
+              )}
             </div>
-            <p className="text-sm text-muted-foreground">Con efectivo o transferencia</p>
+            <p className="text-sm">
+              <span className="et-letter">E</span>
+              <span className="et-label">fectivo / </span>
+              <span className="et-letter">T</span>
+              <span className="et-label">ransferencia</span>
+            </p>
             <p className="text-lg font-semibold text-white mt-2">{formatPrice(cardPrice)}</p>
             <p className="text-sm text-muted-foreground">3 cuotas sin interés con tarjeta</p>
           </div>
