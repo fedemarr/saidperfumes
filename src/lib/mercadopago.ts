@@ -17,8 +17,8 @@ export async function createPaymentPreference(order: {
   const client = getClient();
   const preference = new Preference(client);
 
-  // Charge card price: transfer total + 28%
-  const cardTotal = Math.round(order.total * 1.28);
+  // Charge card price: base total + 20%
+  const cardTotal = Math.round(order.total * 1.20);
 
   const response = await preference.create({
     body: {

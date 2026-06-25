@@ -110,7 +110,7 @@ export const BRANDS_BY_CATEGORY: { label: string; value: string; brands: string[
 ];
 
 export function getCardPrice(price: number): number {
-  return Math.round(price * 1.28);
+  return Math.round(price * 1.20);
 }
 
 export const OCCASIONS = [

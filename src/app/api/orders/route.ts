@@ -35,7 +35,10 @@ export async function POST(req: NextRequest) {
     const orderItems = items.map((item) => {
       const product = products.find((p) => p.id === item.productId);
       if (!product) throw new Error(`Producto no encontrado: ${item.productId}`);
-      const unitPrice = Number(product.priceTransfer ?? product.price);
+      const unitPrice =
+        data.paymentMethod === "TRANSFERENCIA" && product.priceTransfer
+          ? Number(product.priceTransfer)
+          : Number(product.price);
       subtotal += unitPrice * item.quantity;
       return { productId: item.productId, quantity: item.quantity, unitPrice };
     });

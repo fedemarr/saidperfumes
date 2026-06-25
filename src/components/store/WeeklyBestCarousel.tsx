@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ChevronLeft, ChevronRight, ShoppingBag, Star } from "lucide-react";
 import { motion } from "framer-motion";
 import { useCartStore } from "@/stores/cartStore";
-import { formatPrice, getCardPrice } from "@/lib/utils";
+import { formatPrice } from "@/lib/utils";
 import type { ProductWithNotes } from "@/types";
 
 interface WeeklyBestCarouselProps {
@@ -79,12 +79,8 @@ export function WeeklyBestCarousel({ products }: WeeklyBestCarouselProps) {
           style={{ scrollSnapType: "x mandatory" }}
         >
           {products.map((product, i) => {
-            const transferPrice = product.priceTransfer ?? product.price;
-            const cardPrice = getCardPrice(transferPrice);
-            const discountPct =
-              product.priceTransfer && product.priceTransfer < product.price
-                ? Math.round((1 - product.priceTransfer / product.price) * 100)
-                : 0;
+            const transferPrice = product.priceTransfer ?? product.price * 0.8;
+            const discountPct = Math.round((1 - transferPrice / product.price) * 100);
             return (
               <motion.div
                 key={product.id}
@@ -133,29 +129,25 @@ export function WeeklyBestCarousel({ products }: WeeklyBestCarouselProps) {
                       <p className="text-[10px] text-gold uppercase tracking-[0.15em] mb-1">
                         {product.brand}
                       </p>
-                      <p className="text-sm text-white font-semibold line-clamp-2 leading-snug mb-2">
+                      <p className="text-sm text-white font-semibold line-clamp-2 leading-snug mb-3">
                         {product.name}
                       </p>
-                      <div className="flex flex-col gap-0.5">
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-base font-bold text-gold">{formatPrice(transferPrice)}</span>
-                          {discountPct > 0 && (
-                            <span className="text-[9px] bg-gold text-black font-bold px-1.5 py-0.5">
-                              {discountPct}% OFF
-                            </span>
+                      <div className="flex items-end justify-between">
+                        <div>
+                          {product.priceTransfer && product.priceTransfer < product.price && (
+                            <p className="text-xs text-muted-foreground line-through leading-none mb-0.5">
+                              {formatPrice(product.price)}
+                            </p>
                           )}
+                          <p className="text-lg font-bold text-white leading-none">
+                            {formatPrice(transferPrice)}
+                          </p>
+                          <p className="text-[10px] text-muted-foreground mt-0.5">
+                            con transferencia
+                          </p>
                         </div>
-                        <span className="text-[10px] text-muted-foreground">
-                          <span className="font-bold text-[11px]" style={{ color: "#C9A84C", textShadow: "0 0 7px #C9A84Caa" }}>E</span>
-                          fectivo / trans
-                          <span className="font-bold text-[11px]" style={{ color: "#C9A84C", textShadow: "0 0 7px #C9A84Caa" }}>F</span>
-                          erencia
-                        </span>
-                        <span className="text-[10px] text-muted-foreground">
-                          {formatPrice(cardPrice)} — 3 cuotas sin interés
-                        </span>
                         {product.freeShipping && (
-                          <span className="text-[9px] text-gold border border-gold/40 px-1.5 py-0.5 tracking-wider uppercase w-fit mt-1">
+                          <span className="text-[9px] text-gold border border-gold/40 px-1.5 py-0.5 tracking-wider uppercase">
                             Envío gratis
                           </span>
                         )}
