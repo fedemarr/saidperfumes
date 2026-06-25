@@ -1,69 +1,43 @@
-"use client";
-
-import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 
-const TABS = ["ÁRABE", "DISEÑADOR", "NICHO"] as const;
-type Tab = (typeof TABS)[number];
-
-const BRANDS: Record<Tab, { name: string; href: string }[]> = {
-  ÁRABE: [
-    { name: "AFNAN", href: "/productos?brand=AFNAN" },
-    { name: "AL HARAMAIN", href: "/productos?brand=AL HARAMAIN" },
-    { name: "AL WATANIAH", href: "/productos?brand=AL WATANIAH" },
-    { name: "LATTAFA", href: "/productos?brand=LATTAFA" },
-    { name: "RASASI", href: "/productos?brand=RASASI" },
-    { name: "RAYHAAN", href: "/productos?brand=RAYHAAN" },
-    { name: "BHARARA", href: "/productos?brand=BHARARA" },
-  ],
-  DISEÑADOR: [
-    { name: "ARMAF", href: "/productos?brand=ARMAF" },
-    { name: "EMPER", href: "/productos?brand=EMPER" },
-    { name: "FRENCH AVENUE", href: "/productos?brand=FRENCH AVENUE" },
-    { name: "GIORGIO", href: "/productos?brand=GIORGIO" },
-    { name: "JEAN PAUL GAULTIER", href: "/productos?brand=JEAN PAUL GAULTIER" },
-  ],
-  NICHO: [
-    { name: "MAISON ALHAMBRA", href: "/productos?brand=MAISON ALHAMBRA" },
-    { name: "XERJOFF", href: "/productos?brand=XERJOFF" },
-    { name: "DHERRERA", href: "/productos?brand=DHERRERA" },
-  ],
-};
+const LOGOS = [
+  { name: "Lattafa",       file: "LATTAFA .JPG",            brand: "Lattafa" },
+  { name: "Armaf",         file: "ARMAF .JPG",              brand: "Armaf" },
+  { name: "Afnan",         file: "AFNAN .JPG",              brand: "Afnan" },
+  { name: "Rasasi",        file: "RASASI .JPG",             brand: "Rasasi" },
+  { name: "French Avenue", file: "FRENCH AVENUE .JPG",      brand: "French Avenue" },
+  { name: "Al Haramain",   file: "AL HARAMAIN .JPG",        brand: "Al Haramain" },
+  { name: "Bharara",       file: "BHARARA .JPG",            brand: "Bharara" },
+  { name: "Azzaro",        file: "AZZARO .jpg",             brand: "Azzaro" },
+  { name: "Valentino",     file: "VALENTINO .JPG",          brand: "Valentino" },
+  { name: "Xerjoff",       file: "XERJOFF .JPG",            brand: "Xerjoff" },
+  { name: "Rayhaan",       file: "RAYHAAN .JPG",            brand: "Rayhaan" },
+  { name: "Al Wataniah",   file: "AL WATANIAH .JPG",        brand: "Al Wataniah" },
+];
 
 export function BrandLogos() {
-  const [activeTab, setActiveTab] = useState<Tab>("ÁRABE");
-
   return (
-    <section className="py-12 border-t border-border">
+    <section className="py-14 border-t border-border">
       <div className="max-w-7xl mx-auto px-4">
-        <h2 className="section-heading">Marcas</h2>
+        <h2 className="section-heading mb-10">Nuestras Marcas</h2>
 
-        <div className="flex justify-center gap-8 mb-10">
-          {TABS.map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`text-xs tracking-widest uppercase font-medium transition-colors pb-2 border-b-2 ${
-                activeTab === tab
-                  ? "text-gold border-gold"
-                  : "text-muted-foreground border-transparent hover:text-white"
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
-
-        <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
-          {BRANDS[activeTab].map(({ name, href }) => (
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4">
+          {LOGOS.map(({ name, file, brand }) => (
             <Link
               key={name}
-              href={href}
-              className="group flex items-center justify-center"
+              href={`/productos?brand=${encodeURIComponent(brand)}`}
+              className="group flex items-center justify-center bg-white rounded-sm p-3 aspect-video hover:ring-2 hover:ring-gold transition-all duration-300"
             >
-              <span className="font-serif text-lg md:text-2xl font-bold tracking-widest text-gold/60 group-hover:text-gold transition-colors duration-300 uppercase">
-                {name}
-              </span>
+              <div className="relative w-full h-full">
+                <Image
+                  src={`/PERFUMES SAID/LOGOS/${file}`}
+                  alt={name}
+                  fill
+                  className="object-contain"
+                  sizes="(max-width: 640px) 33vw, (max-width: 1024px) 25vw, 17vw"
+                />
+              </div>
             </Link>
           ))}
         </div>
