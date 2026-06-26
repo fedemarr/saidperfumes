@@ -73,8 +73,8 @@ export async function POST(req: NextRequest) {
       include: { items: { include: { product: true } } },
     });
 
-    // Send emails (non-blocking for TARJETA since user gets redirected to MP)
-    Promise.allSettled([
+    // Send emails
+    await Promise.allSettled([
       sendOrderConfirmationEmail(guestEmail, guestName, {
         orderNumber: order.orderNumber,
         items: order.items.map((i) => ({
